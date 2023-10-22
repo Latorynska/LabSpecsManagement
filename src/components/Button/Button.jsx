@@ -16,7 +16,7 @@ const Button = ({ type, text, icon, onClick, className, customClassName, id }) =
     return (
         <button
             type={type ? type : 'button'}
-            className={`btn btn-primary d-flex align-items-center ${className || ''} ${customClass}`}
+            className={`btn btn-primary ${icon ? 'd-flex align-items-center' : ''} ${className || ''} ${customClass}`}
             id={id || ''}
             onClick={onClick}
         >

@@ -1,0 +1,18 @@
+.customAlert{
+    font-weight: bold !important;
+    color: black !important;
+    font-size: 24px !important;
+    font-family: 'Open Sans', sans-serif !important;
+}
+
+.alertBgPrimary{
+    background: #7AC7FF !important;
+}
+
+.alertBgWarning{
+    background: #FFF3CD !important;
+}
+
+.alertBgDanger{
+    background: #F5C2C7 !important;
+}

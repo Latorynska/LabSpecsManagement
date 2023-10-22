@@ -4,19 +4,21 @@ const Input = ( { value, onChange, type, placeholder, name, className, id, label
     if( labelPosition === "kiri"){
         return (
             <>
-                <div className="col-auto">
-                    <label className={`form-label ${styles.inputLabel}`} htmlFor={name}>{label}</label>
-                </div>
-                <div className="col-auto">
-                    <input 
-                        type={type ? type : "text"} 
-                        value={value} 
-                        onChange={onChange}
-                        placeholder={placeholder} 
-                        name={name}
-                        className={`form-control ${styles.inputBase} ${className ? className : ''}`}
-                        id={id ? id : ''}
-                    />
+                <div className="row">
+                    <div className="col-auto">
+                        <label className={`form-label ${styles.inputLabel}`} htmlFor={name}>{label}</label>
+                    </div>
+                    <div className="col">
+                        <input 
+                            type={type ? type : "text"} 
+                            value={value} 
+                            onChange={onChange}
+                            placeholder={placeholder} 
+                            name={name}
+                            className={`form-control ${styles.inputBase} ${className ? className : ''}`}
+                            id={id ? id : ''}
+                        />
+                    </div>
                 </div>
             </>
         );

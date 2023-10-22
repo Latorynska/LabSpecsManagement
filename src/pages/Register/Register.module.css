@@ -1,0 +1,44 @@
+.loginTitle{
+    color: #EEF5FF;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 400; 
+    text-align: center;
+}
+
+.loginSubTitle{
+    color: #EEF5FF;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    text-align: center;
+}
+.secondary{
+    color: #6C757D;
+}
+
+.loginText{
+    color: #C75E6C !important;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    text-align: center;
+}
+
+.loginContainer{
+    min-width: 360px;
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+.inputBox{
+    margin-top: 32px;
+}
+.inputItem{
+    margin-top: 10px;
+}
+.linkItem{
+    margin-top: 25px;
+}
