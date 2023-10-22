@@ -1,0 +1,19 @@
+.btnPrimary {
+    color: white;
+    border-radius: 4px;
+    background: #1A6AA5 !important;
+    border: none !important;
+}
+.btnWhite{
+    border-radius: 4px;
+    border: 1px solid #EEF5FF !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    transition: all 0.2s ease; 
+
+}
+.btnWhite:active, .btnWhite:focus{
+    border-radius: 4px;
+    border: 2px solid #F4C871 !important;
+    background: rgba(255, 255, 255, 0.15) !important; 
+
+}

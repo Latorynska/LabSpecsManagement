@@ -1,0 +1,19 @@
+.containerNavigasiRuangan{
+    margin-top: 70px;
+}
+
+.containerNotifikasi{
+    margin-top: 110px;
+}
+
+.judulContainerNotifikasi{
+    font-size: 20px;
+    color: #EEF5FF;
+}
+
+.buttonGuideContainer{
+    margin-top: 140px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 26px;
+}

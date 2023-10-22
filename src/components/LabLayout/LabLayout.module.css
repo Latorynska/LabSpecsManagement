@@ -1,0 +1,10 @@
+.containerBox{
+    border: 10px solid #A4BAC5; 
+    padding: 30px;
+    margin-top: 35px;
+    margin-right: 20px;
+}
+
+.rowComp{
+    margin-top: 60px !important;
+}

@@ -1,0 +1,42 @@
+.btnComp{
+    display: flex;
+    width: 99px;
+    height: 88px;
+    padding: 9px 17px;
+    justify-content: center;
+    align-items: center; 
+    font-size: 20px;
+}
+
+.btnGood{
+    border-radius: 4.8px;
+    background: #1B6BA6 !important;
+    color: white;
+    font-weight: bold;
+    border: none !important;
+}
+
+.btnBad{
+    border-radius: 4.8px;
+    background: #C75E6C !important;
+    color: white;
+    font-weight: bold;
+    border: none !important;
+}
+
+.btnWarning{
+    border-radius: 4.8px;
+    background: #F4C871 !important;
+    color: black;
+    font-weight: bold;
+    border: none !important;
+}
+
+.btnEmpty{
+    border-radius: 4.8px;
+    border: 3px solid #A4BAC5 !important; 
+    background: transparent !important;
+    color: #A4BAC5 !important;
+    font-size: 64px;
+    padding-top: -100px;
+}

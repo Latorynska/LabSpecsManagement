@@ -1,0 +1,13 @@
+main{
+    min-height: 86vh;
+}
+.navbar{
+    height: 80px;
+    padding: 0px 16px !important;
+    align-items: center; 
+    background: #EEF5FF !important;
+}
+
+.navbarText{
+    color: #1B445A !important; 
+}
