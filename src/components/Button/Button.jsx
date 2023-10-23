@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import styles from './Button.module.css';
 
 const Button = ({ type, text, icon, onClick, className, customClassName, id }) => {
@@ -10,20 +10,26 @@ const Button = ({ type, text, icon, onClick, className, customClassName, id }) =
         case 'right':
             iconToDisplay = faChevronRight;
             break;
+        case 'left':
+            iconToDisplay = faChevronLeft;
+            break;
         default:
-            iconToDisplay: ''
+            iconToDisplay = null; // Use null for no icon
     }
     return (
         <button
-            type={type ? type : 'button'}
+            type={type || 'button'} // Use a default value if type is not provided
             className={`btn btn-primary ${icon ? 'd-flex align-items-center' : ''} ${className || ''} ${customClass}`}
             id={id || ''}
             onClick={onClick}
         >
-            {text}
-            {icon && 
+            {icon === 'left' && (
                 <FontAwesomeIcon icon={iconToDisplay} className={`ml-2 ${styles.icon}`} />
-            }
+            )}
+            {text}
+            {icon === 'right' && (
+                <FontAwesomeIcon icon={iconToDisplay} className={`ml-2 ${styles.icon}`} />
+            )}
         </button>
     );
 }
