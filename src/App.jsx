@@ -7,6 +7,7 @@ import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Manage from './pages/Manage/Manage';
+import ManageKomputer from './pages/ManageKomputer/ManageKomputer';
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
           <Route path='/register' element={ <Register /> } />
           <Route path='/dashboard' element={ <Dashboard /> } />
           <Route path='/manage' element={ <Manage /> } />
+          <Route path='/manage/:labId' element={ <ManageKomputer /> } />
+
         </Routes>
       </Layout>
     </BrowserRouter>
