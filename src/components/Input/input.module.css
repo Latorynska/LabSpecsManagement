@@ -12,3 +12,7 @@
 .input::placeholder{
     color: #6C757D;
 }
+
+.suffixStyle{
+    background: #E9ECEF !important;
+}

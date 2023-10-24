@@ -10,6 +10,18 @@
     background: #C75E6C !important;
     border: none !important;
 }
+.btnSuccess{
+    color: white;
+    border-radius: 4px;
+    background: #198754 !important;
+    border: none !important;
+}
+.btnWarning{
+    color: #000 !important;
+    border-radius: 4px;
+    background: #F4C871 !important;
+    border: none !important;
+}
 .btnWhite{
     border-radius: 4px;
     border: 1px solid #EEF5FF !important;

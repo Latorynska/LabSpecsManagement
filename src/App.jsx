@@ -8,6 +8,7 @@ import Register from './pages/Register/Register';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Manage from './pages/Manage/Manage';
 import ManageKomputer from './pages/ManageKomputer/ManageKomputer';
+import KelolaStatusLaporan from './pages/KelolaStatusLaporan/KelolaStatusLaporan';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path='/dashboard' element={ <Dashboard /> } />
           <Route path='/manage' element={ <Manage /> } />
           <Route path='/manage/:labId' element={ <ManageKomputer /> } />
+          <Route path='/manage/:labId/:idpc' element={ <KelolaStatusLaporan /> } />
 
         </Routes>
       </Layout>
