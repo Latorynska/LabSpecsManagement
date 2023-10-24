@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import styles from './Button.module.css';
 
-const Button = ({ type, text, icon, onClick, className, customClassName, id }) => {
+const Button = ({ type, text, icon, onClick, className, customClassName, id, disabled }) => {
     const customClass = customClassName ? styles[customClassName] : '';
     let iconToDisplay = faChevronRight; // Default icon
     switch (icon) {
@@ -22,6 +22,7 @@ const Button = ({ type, text, icon, onClick, className, customClassName, id }) =
             className={`btn btn-primary ${icon ? 'd-flex align-items-center' : ''} ${className || ''} ${customClass}`}
             id={id || ''}
             onClick={onClick}
+            disabled={disabled ? disabled : false}
         >
             {icon === 'left' && (
                 <FontAwesomeIcon icon={iconToDisplay} className={`ml-2 ${styles.icon}`} />

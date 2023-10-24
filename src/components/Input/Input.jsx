@@ -1,6 +1,6 @@
 import styles from './input.module.css';
 
-const Input = ({ value, onChange, type, placeholder, name, className, id, label, labelPosition, inputGroupText }) => {
+const Input = ({ value, onChange, type, placeholder, name, className, id, label, labelPosition, inputGroupText, disabled }) => {
     if (labelPosition === "kiri") {
         return (
             <>
@@ -18,6 +18,7 @@ const Input = ({ value, onChange, type, placeholder, name, className, id, label,
                                 name={name}
                                 className={`form-control ${styles.inputBase} ${className ? className : ''}`}
                                 id={id ? id : ''}
+                                disabled={disabled ? disabled : false}
                             />
                             {inputGroupText && (
                                     <span className={`input-group-text ${styles.suffixStyle}`}>{inputGroupText}</span>
@@ -40,6 +41,7 @@ const Input = ({ value, onChange, type, placeholder, name, className, id, label,
                         name={name}
                         className={`form-control ${styles.inputBase} ${className ? className : ''}`}
                         id={id ? id : ''}
+                        disabled={disabled ? disabled : false}
                     />
                     {inputGroupText && (
                             <span className={`input-group-text ${styles.suffixStyle}`}>{inputGroupText}</span>

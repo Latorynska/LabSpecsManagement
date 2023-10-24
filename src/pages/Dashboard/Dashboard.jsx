@@ -1,20 +1,11 @@
 import { useState } from 'react';
-import CardSummaryBox from '../../components/CardSummaryBox/CardSummaryBox';
 import {
     dashboardTitle,
     dashboardContainer,
     dashboardSubTitle,
-    cardInformationContainer,
-    customPrimaryCardWrapper,
-    customPrimaryCard,
-    customPrimaryBodyCard,
-    customWarningCardWrapper,
-    customWarningCard,
-    customWarningBodyCard,
-    customDangerCardWrapper,
-    customDangerCard,
-    customDangerBodyCard,
+    cardInformationContainer
 } from './Dashboard.module.css';
+import LabSummary from '../../components/LabSummary/LabSummary';
 
 const Dashboard = () => {
     const [labData, setLabData] = useState([
@@ -38,31 +29,6 @@ const Dashboard = () => {
         },
     ]);
 
-    const getCardStyle = (lab) => {
-        if (lab.bad > 1 || lab.warning >= 3) {
-            return {
-                wrapperClass: customDangerCardWrapper,
-                cardClass: customDangerCard,
-                bodyClass: customDangerBodyCard,
-                footerContent: "Waduh lab mu kayaknya perlu maintenance nih",
-            };
-        } else if (lab.warning > 0 || lab.bad > 0) {
-            return {
-                wrapperClass: customWarningCardWrapper,
-                cardClass: customWarningCard,
-                bodyClass: customWarningBodyCard,
-                footerContent: "Lab ini kayaknya perlu kamu cek, walaupun bisa dipakai bukan berarti gak ada masalah!",
-            };
-        } else {
-            return {
-                wrapperClass: customPrimaryCardWrapper,
-                cardClass: customPrimaryCard,
-                bodyClass: customPrimaryBodyCard,
-                footerContent: "Sejauh ini gak ada masalah sama sekali! Jadi tetap pantau ya!",
-            };
-        }
-    };
-
     return (
         <>
             <div className={`${dashboardContainer}`}>
@@ -70,21 +36,14 @@ const Dashboard = () => {
                 <div className={`${dashboardSubTitle}`}>Ada informasi singkat nih buatmu terkait lab mu!</div>
 
                 <div className={`d-flex justify-content-center gap-5 ${cardInformationContainer}`}>
-                    {labData.map((lab, index) => {
-                        const cardStyle = getCardStyle(lab);
-
-                        return (
-                            <div key={index} className={`card mb-3 bg-transparent ${cardStyle.wrapperClass}`}>
-                                <div className={`card-header ${cardStyle.cardClass}`}>{lab.nama}</div>
-                                <div className={`card-body text-success ${cardStyle.bodyClass}`}>
-                                    <CardSummaryBox message={lab.good} type="success" className="alert-success text-center" />
-                                    <CardSummaryBox message={lab.warning} type="warning" className="alert-warning text-center" />
-                                    <CardSummaryBox message={lab.bad} type="danger" className="alert-danger text-center" />
-                                </div>
-                                <div className={`card-footer ${cardStyle.cardClass}`}>{cardStyle.footerContent}</div>
-                            </div>
-                        );
-                    })}
+                    {
+                        labData.map((lab, index) => (
+                            <LabSummary 
+                                key={index}
+                                labData={lab}
+                            />
+                        ))
+                    }
                 </div>
             </div>
         </>

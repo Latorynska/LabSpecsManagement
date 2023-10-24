@@ -1,7 +1,7 @@
 import Button from '../Button/Button';
 import styles from './CustomInputWithButton.module.css';
 
-const CustomInputWithButton = ( { value, onChange, type, placeholder, name, className, id, label, labelPosition } ) => {
+const CustomInputWithButton = ( { value, onChange, type, placeholder, name, className, id, label, labelPosition, disabled } ) => {
     if( labelPosition === "kiri"){
         return (
             <>
@@ -17,6 +17,7 @@ const CustomInputWithButton = ( { value, onChange, type, placeholder, name, clas
                         name={name}
                         className={`form-control ${styles.inputBase} ${className ? className : ''}`}
                         id={id ? id : ''}
+                        disabled={disabled ? disabled : false}
                     />
                 </div>
             </>
@@ -35,6 +36,7 @@ const CustomInputWithButton = ( { value, onChange, type, placeholder, name, clas
                             name={name}
                             className={`form-control ${styles.inputBase} ${className ? className : ''}`}
                             id={id ? id : ''}
+                            disabled={disabled ? disabled : false}
                         />
                     </div>
                     <div className="col-4 d-grid mx-auto">
@@ -44,6 +46,7 @@ const CustomInputWithButton = ( { value, onChange, type, placeholder, name, clas
                             type="button"
                             text="Submit"
                             customClassName={`btnPrimary`}
+                            disabled={disabled ? disabled : false}
                         />
                     </div>
                 </div>

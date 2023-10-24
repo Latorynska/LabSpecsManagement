@@ -1,4 +1,4 @@
-const Switch = ({ className, id, name, onChange, label, checked }) => {
+const Switch = ({ className, id, name, onChange, label, checked, disabled }) => {
     return ( 
         <>
             <div className="form-check form-switch">
@@ -8,6 +8,7 @@ const Switch = ({ className, id, name, onChange, label, checked }) => {
                     role="switch"
                     id={id}
                     defaultChecked={checked ? checked : false}
+                    disabled={disabled ? disabled : false}
                 />
                 <label className="form-check-label" htmlFor={id}>
                     {label}

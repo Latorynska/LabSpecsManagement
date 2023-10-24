@@ -47,7 +47,7 @@ const ManageKomputer = () => {
                                 <FontAwesomeIcon icon={faCircleQuestion} className="text-white"/>
                             </div>
                         </div>
-                        <LabLayout />
+                        <LabLayout access={'user'} />
                     </div>
                 </div>
                 <div className="col-6 ms-5">

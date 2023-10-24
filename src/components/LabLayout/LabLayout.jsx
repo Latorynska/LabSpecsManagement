@@ -6,7 +6,7 @@ import { faSquarePlus } from '@fortawesome/free-regular-svg-icons';
 import { Link } from 'react-router-dom';
 
 
-const LabLayout = () => {
+const LabLayout = ({ access }) => {
     const [serverData, setServerData] = useState({});
     const [count, setCount] = useState(0);
     const [computerData, setComputerData] = useState([
@@ -144,16 +144,19 @@ const LabLayout = () => {
                         </div>
                     </div>
                 ))}
-                <div className={`row ${rowComp}`}>
-                    <div className="col-12 d-flex justify-content-center gap-5">
-                        <Link to={`/manage/jarkom`}>
-                            <ButtonComp
-                                text={<FontAwesomeIcon icon={faSquarePlus} size='2xs'/>}
-                                computerStatus='empty'
-                            />
-                        </Link>
-                    </div>
-                </div>
+                {
+                    access === "user" &&  
+                        <div className={`row ${rowComp}`}>
+                            <div className="col-12 d-flex justify-content-center gap-5">
+                                <Link to={`/manage/jarkom`}>
+                                    <ButtonComp
+                                        text={<FontAwesomeIcon icon={faSquarePlus} size='2xs'/>}
+                                        computerStatus='empty'
+                                    />
+                                </Link>
+                            </div>
+                        </div>
+                }
             </div>
         </>
      );

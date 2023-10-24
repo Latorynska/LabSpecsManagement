@@ -1,6 +1,6 @@
 import styles from './ButtonComp.module.css';
 
-const ButtonComp = ({ name, id, text, icon, className, customClassName, computerStatus, onClick }) => {
+const ButtonComp = ({ name, id, text, icon, className, customClassName, computerStatus, onClick, disabled }) => {
     let customClass;
     switch(computerStatus){
         case 'good' : customClass = styles['btnGood']; break;
@@ -15,6 +15,7 @@ const ButtonComp = ({ name, id, text, icon, className, customClassName, computer
             name={name}
             className={`${styles.btnComp} ${customClass}`}
             onClick={onClick}
+            disabled={disabled ? disabled : false}
         >
             {text}
         </button>
