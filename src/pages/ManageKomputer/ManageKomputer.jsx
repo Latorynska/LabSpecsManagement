@@ -1,7 +1,7 @@
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { containerRuangan, titleManageKomputer, accessingTitle } from './ManageKomputer.module.css';
-
 import LabLayout from '../../components/LabLayout/LabLayout';
-import { useEffect } from 'react';
 import Button from '../../components/Button/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
@@ -11,9 +11,11 @@ import ButtonComp from '../../components/ButtonComp/ButtonComp';
 import FormDataKomputer from '../../components/FormDataKomputer/FormDataKomputer';
 
 const ManageKomputer = () => {
+    const navigate = useNavigate(); // Use useNavigate hook
     useEffect(() => {
         console.log('euy');
     }, []);
+
     return (
         <>
             <div className={`text-center ${titleManageKomputer} pt-5`}>
@@ -29,6 +31,7 @@ const ManageKomputer = () => {
                                     icon={`left`}
                                     className={`d-flex justify-content-between w-100`}
                                     customClassName={`btnPrimary`}
+                                    onClick={() => navigate(-1)} // Use navigate instead of history
                                 />
                             </div>
                             <div className="col-8">
@@ -71,7 +74,7 @@ const ManageKomputer = () => {
                 </div>
             </div>
         </>
-     );
+    );
 }
- 
+
 export default ManageKomputer;

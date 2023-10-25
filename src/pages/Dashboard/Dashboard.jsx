@@ -6,8 +6,10 @@ import {
     cardInformationContainer
 } from './Dashboard.module.css';
 import LabSummary from '../../components/LabSummary/LabSummary';
+import { useSelector } from 'react-redux';
 
 const Dashboard = () => {
+    const { username } = useSelector(state => state.auth.userData);
     const [labData, setLabData] = useState([
         {
             nama: 'Lab Dasar',
@@ -32,7 +34,7 @@ const Dashboard = () => {
     return (
         <>
             <div className={`${dashboardContainer}`}>
-                <div className={`${dashboardTitle}`}>Selamat Datang Kembali Username!</div>
+                <div className={`${dashboardTitle}`}>Selamat Datang Kembali {username}!</div>
                 <div className={`${dashboardSubTitle}`}>Ada informasi singkat nih buatmu terkait lab mu!</div>
 
                 <div className={`d-flex justify-content-center gap-5 ${cardInformationContainer}`}>

@@ -9,24 +9,32 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import Manage from './pages/Manage/Manage';
 import ManageKomputer from './pages/ManageKomputer/ManageKomputer';
 import KelolaStatusLaporan from './pages/KelolaStatusLaporan/KelolaStatusLaporan';
+import { Provider } from 'react-redux';
+import store from './redux/store';
+import PrivateRoute from './routes/PrivateRoute';
+import Logout from './pages/Logout/Logout';
 
 function App() {
   return (
     <>
-    <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path='/' element={ <LandingPage /> } />
-          <Route path='/login' element={ <Login /> } />
-          <Route path='/register' element={ <Register /> } />
-          <Route path='/dashboard' element={ <Dashboard /> } />
-          <Route path='/manage' element={ <Manage /> } />
-          <Route path='/manage/:labId' element={ <ManageKomputer /> } />
-          <Route path='/manage/:labId/:idpc' element={ <KelolaStatusLaporan /> } />
-
-        </Routes>
-      </Layout>
-    </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <Layout>
+            <Routes>
+              <Route path='/' element={ <LandingPage /> } />
+              <Route path='/login' element={ <Login /> } />
+              <Route path='/register' element={ <Register /> } />
+              <Route element={ <PrivateRoute />}>
+                <Route path='/dashboard' element={ <Dashboard /> } />
+                <Route path='/manage' element={ <Manage /> } />
+                <Route path='/manage/:labId' element={ <ManageKomputer /> } />
+                <Route path='/manage/:labId/:idpc' element={ <KelolaStatusLaporan /> } />
+                <Route path='/logout' element={ <Logout /> } />
+              </Route>
+            </Routes>
+          </Layout>
+        </BrowserRouter>
+      </Provider>
     </>
   );
 }
