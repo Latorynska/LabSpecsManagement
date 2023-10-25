@@ -5,24 +5,15 @@ import Button from '../../components/Button/Button';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../../redux/thunks/authAPI';
+import { getAuth } from 'firebase/auth';
 
 const Register = () => {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const userData = useSelector((state) => state.auth.userData);
-
     const [formData, setFormData] = useState({
         username: '',
         email: '',
         password: '',
     });
-
-    useEffect(() => {
-        // If user data exists, redirect to /dashboard
-        if (userData) {
-            navigate('/dashboard');
-        }
-    }, [userData, navigate]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -34,9 +25,7 @@ const Register = () => {
 
     const handleRegister = (e) => {
         e.preventDefault();
-        const { username, email, password } = formData;
-        dispatch(registerUser(formData));
-        // You can also handle success and error responses from the registerUser action
+        dispatch(registerUser(formData))
     };
 
     return (

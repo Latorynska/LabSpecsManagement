@@ -1,18 +1,17 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../redux/thunks/authAPI";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Logout = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(logoutUser());
     }, []);
-    return ( 
-        <>
-
-        </>
-     );
+    
+    return <Navigate to={'/login'} />
 }
  
 export default Logout;

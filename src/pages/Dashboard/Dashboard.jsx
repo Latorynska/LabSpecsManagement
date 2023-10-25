@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     dashboardTitle,
     dashboardContainer,
@@ -9,7 +9,7 @@ import LabSummary from '../../components/LabSummary/LabSummary';
 import { useSelector } from 'react-redux';
 
 const Dashboard = () => {
-    const { username } = useSelector(state => state.auth.userData);
+    const userData = useSelector(state => state.auth.userData);
     const [labData, setLabData] = useState([
         {
             nama: 'Lab Dasar',
@@ -30,11 +30,14 @@ const Dashboard = () => {
             warning: 2,
         },
     ]);
+    useEffect(() => {
+        console.log(userData);
+    }, []);
 
     return (
         <>
             <div className={`${dashboardContainer}`}>
-                <div className={`${dashboardTitle}`}>Selamat Datang Kembali {username}!</div>
+                <div className={`${dashboardTitle}`}>Selamat Datang Kembali {userData.username}!</div>
                 <div className={`${dashboardSubTitle}`}>Ada informasi singkat nih buatmu terkait lab mu!</div>
 
                 <div className={`d-flex justify-content-center gap-5 ${cardInformationContainer}`}>
