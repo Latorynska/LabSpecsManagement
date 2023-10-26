@@ -1,131 +1,50 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ButtonComp from '../ButtonComp/ButtonComp';
 import { containerBox, rowComp } from './LabLayout.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSquarePlus } from '@fortawesome/free-regular-svg-icons';
 import { Link } from 'react-router-dom';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchLayout } from '../../redux/thunks/LabLayoutAPI';
 
 const LabLayout = ({ access }) => {
-    const [serverData, setServerData] = useState({});
-    const [count, setCount] = useState(0);
-    const [computerData, setComputerData] = useState([
-        [
-            {
-                name: '1',
-                status: 'good',
-            },
-            {
-                name: '2',
-                status: 'good',
-            },
-            {
-                name: '3',
-                status: 'good',
-            },
-            {
-                name: '4',
-                status: 'good',
+    const dispatch = useDispatch();
+    const { selectedRuangan } = useSelector(state => state.ruangan);
+    const { comps } = useSelector(state => state.lablayout);
+
+    const [computerData, setComputerData] = useState([]);
+
+    useEffect(() => {
+        if (selectedRuangan && comps.length > 0) {
+            const { konfigurasi } = selectedRuangan;
+            const rows = [];
+            let dataIndex = 0;
+            for (let i = 0; i < konfigurasi.length; i++) {
+                const row = [];
+                for (let j = 0; j < konfigurasi[i]; j++) {
+                    row.push(comps[dataIndex]);
+                    dataIndex++;
+                }
+                rows.push(row);
             }
-        ],
-        [
-            {
-                name: '5',
-                status: 'good',
-            },
-            {
-                name: '6',
-                status: 'good',
-            },
-            {
-                name: '7',
-                status: 'good',
-            },
-            {
-                name: '8',
-                status: 'bad',
-            }
-        ],
-        [
-            {
-                name: '9',
-                status: 'good',
-            },
-            {
-                name: '10',
-                status: 'good',
-            },
-            {
-                name: '11',
-                status: 'good',
-            },
-            {
-                name: '12',
-                status: 'good',
-            }
-        ],
-        [
-            {
-                name: '13',
-                status: 'good',
-            },
-            {
-                name: '14',
-                status: 'warning',
-            },
-            {
-                name: '15',
-                status: 'bad',
-            },
-            {
-                name: '16',
-                status: 'good',
-            }
-        ],
-        [
-            {
-                name: '17',
-                status: 'good',
-            },
-            {
-                name: '18',
-                status: 'bad',
-            },
-            {
-                name: '19',
-                status: 'good',
-            },
-            {
-                name: '20',
-                status: 'good',
-            }
-        ],
-        [
-            {
-                name: '-',
-                status: 'empty',
-            },
-            {
-                name: '21',
-                status: 'good',
-            },
-            {
-                name: '22',
-                status: 'good',
-            },
-            {
-                name: '-',
-                status: 'empty',
-            },
-        ],
-    ]);
-    
-    return ( 
+            setComputerData(rows);
+        } else {
+            setComputerData([]);
+        }
+    }, [selectedRuangan, comps]);
+
+    useEffect(() => {
+        if (selectedRuangan) {
+            dispatch(fetchLayout(selectedRuangan.id));
+        }
+    }, [selectedRuangan, dispatch]);
+
+    return (
         <>
             <div className={`${containerBox} `}>
                 <div className="row">
                     <div className="col-12 d-flex justify-content-between">
-                        <ButtonComp 
+                        <ButtonComp
                             text={`Server`}
                             computerStatus={`good`}
                         />
@@ -135,31 +54,32 @@ const LabLayout = ({ access }) => {
                     <div key={rowIndex} className={`row ${rowComp}`}>
                         <div className="col-12 d-flex justify-content-between gap-5">
                             {row.map((item, columnIndex) => (
-                                <ButtonComp
-                                    key={columnIndex}
-                                    text={item.name}
-                                    computerStatus={item.status}
-                                />
+                                item ? (
+                                    <ButtonComp
+                                        key={columnIndex}
+                                        text={item.nomor}
+                                        computerStatus={item.status}
+                                    />
+                                ) : ''
                             ))}
                         </div>
                     </div>
                 ))}
-                {
-                    access === "user" &&  
-                        <div className={`row ${rowComp}`}>
-                            <div className="col-12 d-flex justify-content-center gap-5">
-                                <Link to={`/manage/jarkom`}>
-                                    <ButtonComp
-                                        text={<FontAwesomeIcon icon={faSquarePlus} size='2xs'/>}
-                                        computerStatus='empty'
-                                    />
-                                </Link>
-                            </div>
+                {access === "user" &&
+                    <div className={`row ${rowComp}`}>
+                        <div className="col-12 d-flex justify-content-center gap-5">
+                            <Link to={`/manage/jarkom`}>
+                                <ButtonComp
+                                    text={<FontAwesomeIcon icon={faSquarePlus} size='2xs' />}
+                                    computerStatus='empty'
+                                />
+                            </Link>
                         </div>
+                    </div>
                 }
             </div>
         </>
-     );
+    );
 }
- 
+
 export default LabLayout;

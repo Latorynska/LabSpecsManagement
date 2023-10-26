@@ -24,7 +24,6 @@ export const loginUser = createAsyncThunk('auth/loginUser', async (credentials, 
   
 
 export const loadUserData = createAsyncThunk('auth/loadUserData', async (userId, { dispatch, rejectWithValue }) => {
-    console.log('dispatched => ' , userId);
     try {
         const userDocRef = doc(db, 'users', userId);
         const userDocSnapshot = await getDoc(userDocRef);
@@ -51,7 +50,6 @@ export const registerUser = createAsyncThunk('auth/registerUser', async (credent
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, credentials.email, credentials.password);
       const user = userCredential.user;
-      console.log('user => ', user);
   
       await setDoc(doc(db, 'users', user.uid), {
         username: credentials.username,

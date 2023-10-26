@@ -1,26 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { addRuanganData, fetchRuanganData, updateRuanganData, deleteRuanganData } from '../thunks/ruanganAPI';
 
+
 const ruanganSlice = createSlice({
   name: 'ruangan',
   initialState: {
     ruanganData: [],
-    selectedRuangan: {
-      id: '',
-      namaRuangan: '',
-      konfigurasi: '',
-      posisiServer: '',
-      deskripsi: '',
-    },
+    selectedRuangan: JSON.parse(localStorage.getItem('selectedRuangan')) || '',
     loading: false,
     error: null,
   },
   reducers: {
     setSelectedRuangan: (state, action) => {
       state.selectedRuangan = action.payload;
+      localStorage.setItem('selectedRuangan', JSON.stringify(action.payload)); // Save to local storage
     },
     resetSelectedRuangan: (state) => {
-      state.selectedRuangan = {};
+      state.selectedRuangan = null;
+      localStorage.removeItem('selectedRuangan'); // Remove from local storage
     },
   },
   extraReducers: (builder) => {

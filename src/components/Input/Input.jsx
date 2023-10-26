@@ -1,6 +1,6 @@
 import styles from './input.module.css';
 
-const Input = ({ value, onChange, type, placeholder, name, className, id, label, labelPosition, inputGroupText, disabled }) => {
+const Input = ({ value, onChange, type, placeholder, name, className, id, label, labelPosition, inputGroupText, disabled, errorHelper }) => {
     if (labelPosition === "kiri") {
         return (
             <>
@@ -25,6 +25,9 @@ const Input = ({ value, onChange, type, placeholder, name, className, id, label,
                             )}
                         </div>
                     </div>
+                    <div className='invalid-feedback d-block'>
+                        {errorHelper || ''}
+                    </div>
                 </div>
             </>
         );
@@ -39,13 +42,16 @@ const Input = ({ value, onChange, type, placeholder, name, className, id, label,
                         onChange={onChange}
                         placeholder={placeholder}
                         name={name}
-                        className={`form-control ${styles.inputBase} ${className ? className : ''}`}
+                        className={`form-control ${styles.inputBase} ${className ? className : ''} mb-0`}
                         id={id ? id : ''}
                         disabled={disabled ? disabled : false}
                     />
                     {inputGroupText && (
                             <span className={`input-group-text ${styles.suffixStyle}`}>{inputGroupText}</span>
                     )}
+                </div>
+                <div className='invalid-feedback d-block'>
+                    {errorHelper || ''}
                 </div>
             </>
         );
