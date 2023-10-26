@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Button from "../Button/Button";
 import Input from "../Input/Input";
 import Select from "../Select/Select";
@@ -6,13 +6,16 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addComp, fetchLayout } from "../../redux/thunks/LabLayoutAPI";
 import Swal from 'sweetalert2';
+import { resetSelectedComp } from "../../redux/slices/LabLayoutSlice";
+import { fetchRuanganData } from "../../redux/thunks/ruanganAPI";
+import { setSelectedRuangan } from "../../redux/slices/ruanganSlice";
 
 const FormDataKomputer = () => {
     const dispatch = useDispatch();
-    const selectedComp = useSelector(state => state.lablayout.selectedComp);
     const selectedRuangan = useSelector(state => state.ruangan.selectedRuangan);
-    const comps = useSelector(state => state.lablayout.comps);
-    const error = useSelector(state => state.lablayout.error);
+    const { selectedComp, comps, error, loading } = useSelector(state => state.lablayout);
+    const ruanganData = useSelector(state => state.ruangan.ruanganData);
+    const { ruanganID } = useParams();
 
     const [posisiTerakhir, setPosisiTerakhir] = useState(0);
     const [btnDisabled, setBtnDisabled] = useState(false);
@@ -25,10 +28,10 @@ const FormDataKomputer = () => {
         vga: "",
         ram: {
             ukuran: '',
-            tipe: 'ddr3',
+            tipe: "ddr3",
             konfigurasi: 'single channel'
         },
-        storage: [],
+        storage: ["","","","",],
         motherboard: "",
         case: "",
         monitor: "",
@@ -67,17 +70,63 @@ const FormDataKomputer = () => {
         {label:'WARNING', value:'warning'},
         {label:'BAD', value:'bad'},
         {label:'EMPTY', value:'empty'}
-    ]
+    ];
+
+    
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-start',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+        }
+    });
 
     useEffect(() => {
-        selectedComp && setFormData(selectedComp);
-    }, [selectedComp]);
-    useEffect(() => {
-        comps.length > 0 && setPosisiTerakhir(comps[comps.length - 1].posisi + 1);
-    }, [comps]);
-    useEffect(() => {
-        
+        if(!selectedRuangan){
+            dispatch(fetchRuanganData())
+            .then(() => {
+                const target = ruanganData.find(ruangan => ruangan.id === ruanganID);
+                if (target) {
+                    dispatch(setSelectedRuangan(target));
+                }
+            });
+        }
+
     }, []);
+    
+    useEffect(() => {
+        if(selectedComp){
+
+            setFormData(selectedComp);
+        } else {
+            resetFormData();
+        }
+    }, [selectedComp]);
+
+    useEffect(() => {
+        comps.length > 0 && console.log(comps[comps.length - 1].posisi + 1);
+        comps.length > 0 && setPosisiTerakhir(comps[comps.length - 1].posisi + 1);
+        setFormData({...formData, nomor: posisiTerakhir, posisi : posisiTerakhir});
+    }, [selectedRuangan, comps]);
+
+    useEffect(() => {
+        if (loading) {
+          Swal.fire({
+            title: 'Data sedang diproses, mohon tunggu :)',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+              Swal.showLoading();
+            }
+          });
+        } else {
+          Swal.close();
+        }
+      }, [loading]);
 
     const isFormValid = (data) => {
         const requiredFields = [
@@ -97,18 +146,35 @@ const FormDataKomputer = () => {
           "mouse",
           "status",
         ];
-      
+    
+        console.log("Field validation details:");
+        const fieldValidations = requiredFields.map((field) => {
+          if (field.startsWith("ram.")) {
+            const ramField = field.split("ram.")[1];
+            const isFieldValid =
+              ramField === "ukuran" ? (data.ram[ramField] > 0) : data.ram[ramField];
+            console.log(`${field}: ${isFieldValid}`);
+            return isFieldValid;
+          } else {
+            const isFieldValid = data[field];
+            console.log(`${field}: ${isFieldValid}`);
+            return isFieldValid;
+          }
+        });
+    
+        console.log("Storage validation:");
         const isStorageValid = data.storage.some((item) => item);
+        console.log(`isStorageValid: ${isStorageValid}`);
+    
+        const isFormValid = fieldValidations.every((isValid) => isValid) && isStorageValid;
+        console.log(`isFormValid: ${isFormValid}`);
+    
+        return isFormValid;
+    };
       
-        return (
-          requiredFields.every((field) => data[field] && (field !== "ram.ukuran" || data[field] !== 0)) &&
-          isStorageValid
-        );
-      };
-      
-      const updateFormErrors = (data) => {
+    const updateFormErrors = (data) => {
         const updatedFormError = { ...formError };
-      
+    
         const requiredFields = [
             "nomor",
             "kodeInventaris",
@@ -126,28 +192,57 @@ const FormDataKomputer = () => {
             "mouse",
             "status",
         ];
-      
+    
         requiredFields.forEach((field) => {
-            if (!data[field] || (field === "ram.ukuran" && data[field] === 0)) {
-                updatedFormError[field] = `${field} tidak boleh kosong${
-                    field === "ram.ukuran" ? " atau 0" : ""
-                }`;
+            if (!data[field]) {
+                updatedFormError[field] = `${field} tidak boleh kosong`;
             }
         });
-      
+    
         if (!data.storage.some((item) => item)) {
             updatedFormError.storage = "Setidaknya satu kolom storage harus diisi";
         } else {
             updatedFormError.storage = "";
         }
-      
+    
+        if (data["ram.ukuran"] !== '' && parseInt(data["ram.ukuran"]) <= 0) {
+            updatedFormError["ram.ukuran"] = "Ram ukuran harus lebih dari 0";
+        } else {
+            updatedFormError["ram.ukuran"] = "";
+        }
+    
         return updatedFormError;
     };
+    const resetFormData = () => {
+    
+        setFormData({
+            nomor: posisiTerakhir,
+            posisi: posisiTerakhir,
+            kodeInventaris: "",
+            prosesor: "",
+            vga: "",
+            ram: {
+                ukuran: '',
+                tipe: 'ddr3',
+                konfigurasi: 'single channel'
+            },
+            storage: ["","","","",],
+            motherboard: "",
+            case: "",
+            monitor: "",
+            psu: "",
+            keyboard: "",
+            mouse: "",
+            sound: "",
+            additional: "",
+            status: "good",
+        })
+    }
+    
     const handleInputChange = (e) => {
         const { name, value } = e.target;
     
         if (name.startsWith("storage")) {
-            // Handle Storage input
             const storageIndex = parseInt(name.match(/\d+/)[0]);
             const updatedStorage = [...formData.storage];
             updatedStorage[storageIndex] = value;
@@ -156,9 +251,7 @@ const FormDataKomputer = () => {
             const isAtLeastOneStorageFilled = updatedStorage.some(item => item);
             setFormError({ ...formError, storage: isAtLeastOneStorageFilled ? "" : "At least one storage field must be filled" });
         } else if (name.startsWith("ram")) {
-            // Handle Ram input
             if (name === "ram.ukuran" && value !== "") {
-                // Check if it's ram.ukuran and the value is not empty
                 setFormError({ ...formError, [name]: /^\d+$/.test(value) ? "" : "Only numeric values are allowed" });
             } else {
                 setFormError({ ...formError, [name]: "" });
@@ -171,7 +264,7 @@ const FormDataKomputer = () => {
                     [name.split('.')[1]]: value,
                 },
             });
-        } else{
+        } else {
             setFormData({ ...formData, [name]: value });
             if (name !== 'sound' && name !== 'additional'){
                 setFormError({ ...formError, [name]: value ? "" : `${name} tidak boleh kosong` });
@@ -189,23 +282,32 @@ const FormDataKomputer = () => {
         if (isValid || formData.status == 'bad' || formData.status == 'empty') {
             console.log("Form submitted:", formData);
             console.log('idruangan: ', selectedRuangan.id);
-            dispatch(addComp({idRuangan : selectedRuangan.id, data : formData}))
-                .then(()=> {
-                    if(error){
-                        Swal.fire({
-                            title: 'oops, ada error',
-                            text: error.getMessage(),
-                            icon: 'error',
-                            timer: 3000,
-                          });
-                    } else {
-                        dispatch(fetchLayout());
-                        alert('komputer ditambahkan');
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                })
+            if(formData.kodeInventaris != ""){
+                dispatch(addComp({idRuangan : selectedRuangan.id, data : formData}))
+                    .then(()=> {
+                        if(error){
+                            Swal.fire({
+                                title: 'oops, ada error',
+                                text: error.getMessage(),
+                                icon: 'error',
+                                timer: 3000,
+                              });
+                        } else {
+                            dispatch(fetchLayout(selectedRuangan.id));
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Data Berhasil Dirubah!'
+                            });
+                            resetFormData();
+                            dispatch(resetSelectedComp());
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+            } else {
+                setFormError({ ...formError, kodeInventaris: "kode inventaris tidak boleh kosong"});
+            }
         } else {
             setFormError(updatedFormError);
         }
@@ -222,6 +324,7 @@ const FormDataKomputer = () => {
                                 type={`text`}
                                 name={'nomor'}
                                 errorHelper={formError.nomor}
+                                value={formData.nomor}
                             />
                         </div>
                         <div className="col-6">
@@ -242,6 +345,7 @@ const FormDataKomputer = () => {
                         type={`text`}
                         name={'kodeInventaris'}
                         errorHelper={formError.kodeInventaris}
+                        value={formData.kodeInventaris}
                     />
                 </div>
             </div>
@@ -253,6 +357,7 @@ const FormDataKomputer = () => {
                         type={`text`}
                         name={'prosesor'}
                         errorHelper={formError.prosesor}
+                        value={formData.prosesor}
                     />
                 </div>
                 <div className="col-6">
@@ -262,6 +367,7 @@ const FormDataKomputer = () => {
                         type={`text`}
                         name={'vga'}
                         errorHelper={formError.vga}
+                        value={formData.vga}
                     />
                 </div>
             </div>
@@ -284,7 +390,7 @@ const FormDataKomputer = () => {
                                 onChange={handleInputChange}
                                 label={`Tipe`}
                                 type={`text`}
-                                options={[{ label: "DDR4", value: "DDR4" },{ label: "DDR3", value: "DDR3" },]}
+                                options={[{ label: "DDR4", value: "ddr4" },{ label: "DDR3", value: "ddr3" },]}
                                 name={"ram.tipe"}
                                 value={formData.ram.tipe}
                                 errorHelper={formError["ram.tipe"]}
@@ -312,6 +418,7 @@ const FormDataKomputer = () => {
                         type={`text`}
                         name={'storage[0]'}
                         errorHelper={formError.storage}
+                        value={formData.storage[0]}
                     />
                 </div>
                 <div className="col-6">
@@ -321,6 +428,7 @@ const FormDataKomputer = () => {
                         type={`text`}
                         name={'storage[1]'}
                         errorHelper={formError.storage}
+                        value={formData.storage[1]}
                     />
                 </div>
             </div>
@@ -332,6 +440,7 @@ const FormDataKomputer = () => {
                         type={`text`}
                         name={'storage[2]'}
                         errorHelper={formError.storage}
+                        value={formData.storage[2]}
                     />
                 </div>
                 <div className="col-6">
@@ -341,6 +450,7 @@ const FormDataKomputer = () => {
                         type={`text`}
                         name={'storage[3]'}
                         errorHelper={formError.storage}
+                        value={formData.storage[3]}
                     />
                 </div>
             </div>
@@ -352,6 +462,7 @@ const FormDataKomputer = () => {
                         type={`text`}
                         name={'motherboard'}
                         errorHelper={formError.motherboard}
+                        value={formData.motherboard}
                     />
                 </div>
                 <div className="col-6">
@@ -361,6 +472,7 @@ const FormDataKomputer = () => {
                         type={`text`}
                         name={'case'}
                         errorHelper={formError.case}
+                        value={formData.case}
                     />
                 </div>
             </div>
@@ -372,6 +484,7 @@ const FormDataKomputer = () => {
                         type={`text`}
                         name={'monitor'}
                         errorHelper={formError.monitor}
+                        value={formData.monitor}
                     />
                 </div>
                 <div className="col-6">
@@ -381,6 +494,7 @@ const FormDataKomputer = () => {
                         type={`text`}
                         name={'psu'}
                         errorHelper={formError.psu}
+                        value={formData.psu}
                     />
                 </div>
             </div>
@@ -392,6 +506,7 @@ const FormDataKomputer = () => {
                         type={`text`}
                         name={'keyboard'}
                         errorHelper={formError.keyboard}
+                        value={formData.keyboard}
                     />
                 </div>
                 <div className="col-6">
@@ -401,6 +516,7 @@ const FormDataKomputer = () => {
                         type={`text`}
                         name={'mouse'}
                         errorHelper={formError.mouse}
+                        value={formData.mouse}
                     />
                 </div>
             </div>
@@ -412,6 +528,7 @@ const FormDataKomputer = () => {
                         type={`text`}
                         name={'sound'}
                         errorHelper={formError.sound}
+                        value={formData.sound}
                     />
                 </div>
                 <div className="col-6">
@@ -421,6 +538,7 @@ const FormDataKomputer = () => {
                         type={`text`}
                         name={'additional'}
                         errorHelper={formError.additional}
+                        value={formData.additional}
                     />
                 </div>
             </div>
@@ -433,6 +551,7 @@ const FormDataKomputer = () => {
                         options={optionsStatus}
                         name={'status'}
                         errorHelper={formError.status}
+                        value={formData.status}
                     />
                 </div>
                 <div className="col-6">

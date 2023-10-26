@@ -31,7 +31,14 @@ const lablayoutSlice = createSlice({
     error: '',
     loading: false,
   },
-  reducers: {},
+  reducers: {
+    setSelectedComp: (state, action) => {
+      state.selectedComp = action.payload;
+    },
+    resetSelectedComp: (state) => {
+      state.selectedComp = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchLayout.pending, (state) => {
@@ -63,6 +70,6 @@ const lablayoutSlice = createSlice({
   },
 });
 
-export const { setSelectedRuangan, resetSelectedRuangan } = lablayoutSlice.actions;
+export const { setSelectedComp, resetSelectedComp } = lablayoutSlice.actions;
 
 export default lablayoutSlice.reducer;

@@ -13,11 +13,11 @@ const ruanganSlice = createSlice({
   reducers: {
     setSelectedRuangan: (state, action) => {
       state.selectedRuangan = action.payload;
-      localStorage.setItem('selectedRuangan', JSON.stringify(action.payload)); // Save to local storage
+      localStorage.setItem('selectedRuangan', JSON.stringify(action.payload));
     },
     resetSelectedRuangan: (state) => {
       state.selectedRuangan = null;
-      localStorage.removeItem('selectedRuangan'); // Remove from local storage
+      localStorage.removeItem('selectedRuangan');
     },
   },
   extraReducers: (builder) => {

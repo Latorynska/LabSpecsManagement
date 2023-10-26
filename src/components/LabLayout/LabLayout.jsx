@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ButtonComp from '../ButtonComp/ButtonComp';
 import { containerBox, rowComp } from './LabLayout.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,6 +6,7 @@ import { faSquarePlus } from '@fortawesome/free-regular-svg-icons';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchLayout } from '../../redux/thunks/LabLayoutAPI';
+import { resetSelectedComp, setSelectedComp } from '../../redux/slices/LabLayoutSlice';
 
 const LabLayout = ({ access }) => {
     const dispatch = useDispatch();
@@ -18,20 +19,25 @@ const LabLayout = ({ access }) => {
         if (selectedRuangan && comps.length > 0) {
             const { konfigurasi } = selectedRuangan;
             const rows = [];
-            let dataIndex = 0;
-            for (let i = 0; i < konfigurasi.length; i++) {
-                const row = [];
-                for (let j = 0; j < konfigurasi[i]; j++) {
-                    row.push(comps[dataIndex]);
-                    dataIndex++;
+            
+            comps.forEach((item, i) => {
+                if (i % konfigurasi === 0) {
+                    rows.push([]);
                 }
-                rows.push(row);
-            }
+                rows[rows.length - 1].push(item);
+            });
+            rows.forEach(row => {
+                while (row.length < konfigurasi) {
+                    row.push(null);
+                }
+            });
+
             setComputerData(rows);
         } else {
             setComputerData([]);
         }
     }, [selectedRuangan, comps]);
+
 
     useEffect(() => {
         if (selectedRuangan) {
@@ -50,30 +56,41 @@ const LabLayout = ({ access }) => {
                         />
                     </div>
                 </div>
-                {computerData.map((row, rowIndex) => (
-                    <div key={rowIndex} className={`row ${rowComp}`}>
-                        <div className="col-12 d-flex justify-content-between gap-5">
-                            {row.map((item, columnIndex) => (
-                                item ? (
-                                    <ButtonComp
-                                        key={columnIndex}
-                                        text={item.nomor}
-                                        computerStatus={item.status}
-                                    />
-                                ) : ''
-                            ))}
+                {computerData.map((row, rowIndex) => {
+                    return (
+                        <div key={rowIndex} className={`row ${rowComp}`}>
+                            <div className="col-12 d-flex justify-content-between gap-5">
+                                {row.map((item, columnIndex) => (
+                                    item ? (
+                                        <ButtonComp
+                                            key={columnIndex}
+                                            text={item.status == 'empty' ? '-' : item.nomor}
+                                            computerStatus={item.status}
+                                            to={ access == "user" ? `/manage/${selectedRuangan.id}` : `/`}
+                                            onClick={() => {dispatch(setSelectedComp(item))}} 
+                                        />
+                                    ) : (
+                                        <ButtonComp
+                                            key={columnIndex}
+                                            text="-"
+                                            computerStatus="empty"
+                                            disabled={true}
+                                        />
+                                    )
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
                 {access === "user" &&
                     <div className={`row ${rowComp}`}>
                         <div className="col-12 d-flex justify-content-center gap-5">
-                            <Link to={`/manage/jarkom`}>
-                                <ButtonComp
-                                    text={<FontAwesomeIcon icon={faSquarePlus} size='2xs' />}
-                                    computerStatus='empty'
-                                />
-                            </Link>
+                            <ButtonComp
+                                text={<FontAwesomeIcon icon={faSquarePlus} size='2xs' />}
+                                computerStatus='empty'
+                                onClick={() => dispatch(resetSelectedComp())}
+                                to={`/manage/${selectedRuangan.id}`}
+                            />
                         </div>
                     </div>
                 }
