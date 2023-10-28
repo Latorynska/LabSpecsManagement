@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import { containerRuangan, titleManageKomputer, accessingTitle } from './ManageKomputer.module.css';
 import LabLayout from '../../components/LabLayout/LabLayout';
 import Button from '../../components/Button/Button';
@@ -9,9 +9,11 @@ import Input from '../../components/Input/Input';
 import Switch from '../../components/Switch/Switch';
 import ButtonComp from '../../components/ButtonComp/ButtonComp';
 import FormDataKomputer from '../../components/FormDataKomputer/FormDataKomputer';
+import { useSelector } from 'react-redux';
 
 const ManageKomputer = () => {
-    const navigate = useNavigate(); // Use useNavigate hook
+    const navigate = useNavigate();
+    const selectedComp = useSelector(state => state.lablayout.selectedComp);
     useEffect(() => {
         console.log('euy');
     }, []);
@@ -31,7 +33,7 @@ const ManageKomputer = () => {
                                     icon={`left`}
                                     className={`d-flex justify-content-between w-100`}
                                     customClassName={`btnPrimary`}
-                                    onClick={() => navigate(-1)} // Use navigate instead of history
+                                    onClick={() => navigate(-1)}
                                 />
                             </div>
                             <div className="col-8">
@@ -64,10 +66,18 @@ const ManageKomputer = () => {
                             Sedang mengakses data :
                         </div>
                         <div className="col-6">
-                            <ButtonComp
-                                text={`NEW`}
-                                computerStatus='add'
-                            />
+                            {
+                                selectedComp ? 
+                                <ButtonComp 
+                                    text={selectedComp.status == 'empty' ? '-' : selectedComp.nomor}
+                                    computerStatus={selectedComp.status}
+                                />
+                                :
+                                <ButtonComp
+                                    text={`NEW`}
+                                    computerStatus='add'
+                                />
+                            }
                         </div>
                     </div>
                     <FormDataKomputer />

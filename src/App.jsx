@@ -31,7 +31,7 @@ function App() {
                 <Route path='/dashboard' element={ <Dashboard /> } />
                 <Route path='/manage' element={ <Manage /> } />
                 <Route path='/manage/:labId' element={ <ManageKomputer /> } />
-                <Route path='/manage/:labId/:idpc' element={ <KelolaStatusLaporan /> } />
+                <Route path='/manage/:labId/:kodeInventaris' element={ <KelolaStatusLaporan /> } />
                 <Route path='/logout' element={ <Logout /> } />
               </Route>
             </Routes>

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchLayout, addComp } from '../thunks/LabLayoutAPI';
+import { fetchLayout, addComp, updateComp, deleteComp } from '../thunks/LabLayoutAPI';
 
 const lablayoutSlice = createSlice({
   name: 'lablayout',
@@ -7,27 +7,6 @@ const lablayoutSlice = createSlice({
     comps: [],
     server: {},
     selectedComp: null,
-        // nomor: 99,
-        // posisi: 99,
-        // kodeInventaris: '',
-        // prosesor: '',
-        // vga: '',
-        // ram: {
-        //     ukuran: 0,
-        //     tipe: '',
-        //     konfigurasi: '',
-        // },
-        // storage: [],
-        // motherboard: '',
-        // case: '',
-        // monitor: '',
-        // psu: '',
-        // keyboard: '',
-        // mouse: '',
-        // sound: '',
-        // additional: '',
-        // status: '',
-    // },
     error: '',
     loading: false,
   },
@@ -64,6 +43,36 @@ const lablayoutSlice = createSlice({
         state.error = '';
       })
       .addCase(addComp.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateComp.pending, (state) => {
+        state.loading = true;
+        state.error = '';
+      })
+      .addCase(updateComp.fulfilled, (state, action) => {
+        const updatedCompIndex = state.comps.findIndex((comp) => comp.id === action.payload.snapshotId);
+        if (updatedCompIndex !== -1) {
+          state.comps[updatedCompIndex] = action.payload;
+        }
+        state.loading = false;
+        state.error = '';
+      })
+      .addCase(updateComp.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteComp.pending, (state) => {
+        state.loading = true;
+        state.error = "";
+      })
+      .addCase(deleteComp.fulfilled, (state, action) => {
+        const idComp = action.payload;
+        state.comps = state.comps.filter((comp) => comp.id !== idComp);
+        state.loading = false;
+        state.error = "";
+      })
+      .addCase(deleteComp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

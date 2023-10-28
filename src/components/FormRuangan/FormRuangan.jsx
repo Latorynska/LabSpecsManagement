@@ -15,6 +15,8 @@ const FormRuangan = () => {
   const ruanganData = useSelector((state) => state.ruangan.ruanganData);
   const loading = useSelector(state => state.ruangan.loading);
   const selectedRuangan = useSelector((state) => state.ruangan.selectedRuangan);
+  const owner = useSelector(state => state.auth.userData.username);
+
   const [selectedOption, setSelectedOption] = useState(selectedRuangan?.id ? "Update Ruangan" : "Tambah Baru");
   const [submitDisabled, setSubmitDisabled] = useState(false);
 
@@ -24,6 +26,7 @@ const FormRuangan = () => {
     konfigurasi: selectedRuangan?.konfigurasi || "",
     posisiServer: selectedRuangan?.posisiServer || "",
     deskripsi: selectedRuangan?.deskripsi || "",
+    owner: owner || "",
   });
   const [formError, setFormError] = useState({
     namaRuangan: "",

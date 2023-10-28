@@ -34,6 +34,7 @@ export const fetchLayout = createAsyncThunk(
     }
 );
 
+
 export const addComp = createAsyncThunk("lablayout/addComp",async ({ idRuangan, data }, { rejectWithValue }) => {
         console.log('idruangan => ', idRuangan);
         console.log('data => ', data);
@@ -49,3 +50,33 @@ export const addComp = createAsyncThunk("lablayout/addComp",async ({ idRuangan, 
     }
 );
 
+export const updateComp = createAsyncThunk(
+    "lablayout/updateComp",
+    async ({ idRuangan,idSnapshot, data }, { rejectWithValue }) => {
+        try {
+            const subcollectionRef = doc(db, `ruangan/${idRuangan}/layout/${idSnapshot}`);
+            await updateDoc(subcollectionRef, data);
+            console.log(data);
+            return {...data, snapshotId : idSnapshot};
+        } catch (error) {
+            console.log(error);
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+  export const deleteComp = createAsyncThunk(
+    "lablayout/deleteComp",
+    async ({ idRuangan, idComp }, { rejectWithValue }) => {
+        console.log('idruangan => ', idRuangan);
+        console.log('idcomp => ', idComp);
+        try {
+            const subcollectionRef = doc(db, `ruangan/${idRuangan}/layout/${idComp}`);
+            await deleteDoc(subcollectionRef);
+            return idComp;
+        } catch (error) {
+            console.log(error);
+            return rejectWithValue(error.message);
+        }
+    }
+);

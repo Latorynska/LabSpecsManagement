@@ -4,7 +4,7 @@ import Input from "../Input/Input";
 import Select from "../Select/Select";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addComp, fetchLayout } from "../../redux/thunks/LabLayoutAPI";
+import { addComp, deleteComp, fetchLayout, updateComp } from "../../redux/thunks/LabLayoutAPI";
 import Swal from 'sweetalert2';
 import { resetSelectedComp } from "../../redux/slices/LabLayoutSlice";
 import { fetchRuanganData } from "../../redux/thunks/ruanganAPI";
@@ -19,8 +19,11 @@ const FormDataKomputer = () => {
 
     const [posisiTerakhir, setPosisiTerakhir] = useState(0);
     const [btnDisabled, setBtnDisabled] = useState(false);
+    const [compIdSnapshot, setCompIdSnapshot] = useState('');
     
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState(
+        selectedComp ? selectedComp : 
+        {
         nomor: "",
         posisi: posisiTerakhir + 1,
         kodeInventaris: "",
@@ -29,7 +32,7 @@ const FormDataKomputer = () => {
         ram: {
             ukuran: '',
             tipe: "ddr3",
-            konfigurasi: 'single channel'
+            konfigurasi: "1"
         },
         storage: ["","","","",],
         motherboard: "",
@@ -100,17 +103,24 @@ const FormDataKomputer = () => {
     
     useEffect(() => {
         if(selectedComp){
-
             setFormData(selectedComp);
+            setCompIdSnapshot(selectedComp.id);
         } else {
             resetFormData();
+            setCompIdSnapshot('');
         }
     }, [selectedComp]);
 
     useEffect(() => {
-        comps.length > 0 && console.log(comps[comps.length - 1].posisi + 1);
-        comps.length > 0 && setPosisiTerakhir(comps[comps.length - 1].posisi + 1);
-        setFormData({...formData, nomor: posisiTerakhir, posisi : posisiTerakhir});
+        if (comps.length > 0 && selectedComp == null) {
+            const maxPosisi = Math.max(...comps.map((comp) => comp.posisi));
+            setPosisiTerakhir(maxPosisi + 1);
+            setFormData({
+                ...formData,
+                nomor: maxPosisi + 1,
+                posisi: maxPosisi + 1,
+            });
+        }
     }, [selectedRuangan, comps]);
 
     useEffect(() => {
@@ -214,7 +224,6 @@ const FormDataKomputer = () => {
         return updatedFormError;
     };
     const resetFormData = () => {
-    
         setFormData({
             nomor: posisiTerakhir,
             posisi: posisiTerakhir,
@@ -224,7 +233,7 @@ const FormDataKomputer = () => {
             ram: {
                 ukuran: '',
                 tipe: 'ddr3',
-                konfigurasi: 'single channel'
+                konfigurasi: ""
             },
             storage: ["","","","",],
             motherboard: "",
@@ -283,8 +292,9 @@ const FormDataKomputer = () => {
             console.log("Form submitted:", formData);
             console.log('idruangan: ', selectedRuangan.id);
             if(formData.kodeInventaris != ""){
-                dispatch(addComp({idRuangan : selectedRuangan.id, data : formData}))
-                    .then(()=> {
+                if(compIdSnapshot){
+                    dispatch(updateComp(selectedRuangan.id, compIdSnapshot, formData))
+                    .then(() => {
                         if(error){
                             Swal.fire({
                                 title: 'oops, ada error',
@@ -293,18 +303,53 @@ const FormDataKomputer = () => {
                                 timer: 3000,
                               });
                         } else {
-                            dispatch(fetchLayout(selectedRuangan.id));
                             Toast.fire({
                                 icon: 'success',
                                 title: 'Data Berhasil Dirubah!'
                             });
-                            resetFormData();
                             dispatch(resetSelectedComp());
+                            resetFormData();
                         }
                     })
                     .catch(err => {
+                        Swal.fire({
+                            title: 'oops, ada error',
+                            text: err.getMessage(),
+                            icon: 'error',
+                            timer: 3000,
+                        });
                         console.log(err);
                     })
+                } else {
+                    dispatch(addComp({idRuangan : selectedRuangan.id, data : formData}))
+                        .then(()=> {
+                            if(error){
+                                Swal.fire({
+                                    title: 'oops, ada error',
+                                    text: error.getMessage(),
+                                    icon: 'error',
+                                    timer: 3000,
+                                  });
+                            } else {
+                                dispatch(fetchLayout(selectedRuangan.id));
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Data Berhasil Dirubah!'
+                                });
+                                resetFormData();
+                                dispatch(resetSelectedComp());
+                            }
+                        })
+                        .catch(err => {
+                            Swal.fire({
+                                title: 'oops, ada error',
+                                text: err.getMessage(),
+                                icon: 'error',
+                                timer: 3000,
+                            });
+                            console.log(err);
+                        });
+                }
             } else {
                 setFormError({ ...formError, kodeInventaris: "kode inventaris tidak boleh kosong"});
             }
@@ -312,6 +357,42 @@ const FormDataKomputer = () => {
             setFormError(updatedFormError);
         }
     };
+
+    const handleDelete = () => {
+        if (selectedComp.kodeInventaris) {
+        Swal.fire({
+            title: 'Anda yakin?',
+            text: 'Sekalinya data dihapus tidak akan bisa dikembalikan!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#1A6AA5',
+            cancelButtonColor: '#C75E6C',
+            confirmButtonText: 'Ya hapus saja',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                console.log('selectedruangan => ',selectedRuangan.id);
+                console.log('selectedcomp => ',selectedComp.kodeInventaris);
+                dispatch(deleteComp({idRuangan : selectedRuangan.id, idComp : selectedComp.kodeInventaris}))
+                    .then(() => {
+                        resetFormData();
+                        dispatch(resetSelectedComp());
+                        dispatch(fetchLayout(selectedRuangan.id));
+                        Swal.fire('Deleted!', 'Ruangan berhasil dihapus!', 'success');
+                    })
+                    .catch(err => {
+                        Swal.fire({
+                            title: 'oops, ada error',
+                            text: error.getMessage(),
+                            icon: 'error',
+                            timer: 3000,
+                        });
+                        console.log(err);
+                    });
+            }
+        });
+        }
+      };
+
     return ( 
         <form action="#" onSubmit={handleSubmit}>
             <div className="row pt-5">
@@ -562,7 +643,7 @@ const FormDataKomputer = () => {
                 <>
                     <div className="row pt-4">
                         <div className="col-6">
-                            <Link to={`/manage/jarkom/idpc1`}>
+                            <Link to={`/manage/${selectedRuangan.id}/${selectedComp.kodeInventaris}`}>
                                 <Button 
                                     text={`Kelola Status Laporan`}
                                     customClassName={'btnSuccess'}
@@ -579,6 +660,7 @@ const FormDataKomputer = () => {
                                         customClassName={'btnPrimary'}
                                         className={`w-100`}
                                         disabled={btnDisabled}
+                                        type={`submit`}
                                     />
                                 </div>
                             </div>
@@ -591,6 +673,7 @@ const FormDataKomputer = () => {
                                 customClassName={'btnDanger'}
                                 className={'w-100'}
                                 disabled={btnDisabled}
+                                onClick={handleDelete}
                             />
                         </div>
                         <div className="col-6">
