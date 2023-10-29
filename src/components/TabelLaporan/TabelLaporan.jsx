@@ -2,30 +2,21 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSquarePlus } from '@fortawesome/free-regular-svg-icons';
 import Button from '../Button/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { resetSelectedLaporan, setSelectedLaporan } from '../../redux/slices/computerSlice';
 
 const TabelLaporan = () => {
-    
-    const [laporan, setLaporan] = useState([
-        {
-            'id': '1',
-            'tanggal laporan': '03/10/2023',
-            'device problem': 'keyboard',
-            'status': 'solved',
-        },
-        {
-            'id': '2',
-            'tanggal laporan': '29/09/2023',
-            'device problem': 'pc',
-            'status': 'in repair',
-        },
-        {
-            'id': '3',
-            'tanggal laporan': '28/09/2023',
-            'device problem': 'monitor',
-            'status': 'reported',
-        },
-    ]);
+    const { laporanData } = useSelector(state => state.computer);
+    const dispatch = useDispatch();
+
+    const selectLaporan = (laporan) => {
+        dispatch(setSelectedLaporan(laporan));
+    }
+    useEffect(() => {
+        console.log(laporanData);
+    }, []);
+
     return ( 
         <>
             <div className="row mt-5">
@@ -34,6 +25,7 @@ const TabelLaporan = () => {
                         <Button
                             text={<FontAwesomeIcon icon={faSquarePlus} size='lg' />}
                             customClassName='btnSuccess'
+                            onClick={() => dispatch(resetSelectedLaporan())}
                         />
                     </div>
                 </div>
@@ -49,15 +41,26 @@ const TabelLaporan = () => {
                             </tr>
                         </thead>
                         <tbody className='table-group-divider'>
-                            {laporan.map((item, index) => (
-                                <tr key={index}>
-                                    <td>{item['id']}</td>
-                                    <td>{item['tanggal laporan']}</td>
-                                    <td>{item['device problem']}</td>
-                                    <td>{item['status']}</td>
-                                    <td className='d-flex justify-content-center'><Button customClassName={`btnSuccess`} text={`Detail`} /></td>
+                            {
+                                laporanData.length > 0 ? laporanData.map((item, index) => (
+                                    <tr key={index}>
+                                        <td>{item.id}</td>
+                                        <td>{item.tanggal}</td>
+                                        <td>{item.device}</td>
+                                        <td>{item.status === "warning" ? "Has Problem" : item.status}</td>
+                                        <td className='d-flex justify-content-center'>
+                                            <Button 
+                                                customClassName={`btnSuccess`} 
+                                                text={`Detail`} 
+                                                onClick={() =>selectLaporan(item)}
+                                            />
+                                        </td>
+                                    </tr>
+                                )) : 
+                                <tr>
+                                    <th colSpan={5} className='text-center'>Komputer ini belum pernah dapet masalah!</th>
                                 </tr>
-                            ))}
+                            }
                         </tbody>
                     </table>
                 </div>

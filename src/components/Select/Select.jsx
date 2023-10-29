@@ -13,9 +13,9 @@ const Select = ({ value, onChange, placeholder, name, className, id, label, opti
                 disabled={disabled ? disabled : false}
             >
                 {placeholder && <option value="">{placeholder}</option>}
-                {options.map((option, index) => (
-                    <option key={index} value={option.value}>
-                        {option.label}
+                {options?.map((option, index) => (
+                    <option key={index} value={option?.value}>
+                        {option?.label}
                     </option>
                 ))}
             </select>

@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchLayout, addComp, updateComp, deleteComp } from '../thunks/LabLayoutAPI';
+import { fetchLayout, addComp, updateComp, deleteComp, fetchServerData, switchPosition } from '../thunks/LabLayoutAPI';
 
 const lablayoutSlice = createSlice({
   name: 'lablayout',
   initialState: {
     comps: [],
-    server: {},
+    server: null,
     selectedComp: null,
     error: '',
     loading: false,
@@ -17,6 +17,10 @@ const lablayoutSlice = createSlice({
     resetSelectedComp: (state) => {
       state.selectedComp = null;
     },
+    resetCompsAndServer: (state) => {
+      state.comps = [];
+      state.server = null;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -75,10 +79,35 @@ const lablayoutSlice = createSlice({
       .addCase(deleteComp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(fetchServerData.pending, (state) => {
+        state.loading = true;
+        state.error = '';
+      })
+      .addCase(fetchServerData.fulfilled, (state, action) => {
+        state.server = action.payload;
+        state.loading = false;
+        state.error = '';
+      })
+      .addCase(fetchServerData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(switchPosition.pending, (state) => {
+        state.loading = true;
+        state.error = '';
+      })
+      .addCase(switchPosition.fulfilled, (state) => {
+        state.loading = false;
+        state.error = '';
+      })
+      .addCase(switchPosition.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
 
-export const { setSelectedComp, resetSelectedComp } = lablayoutSlice.actions;
+export const { setSelectedComp, resetSelectedComp, resetCompsAndServer } = lablayoutSlice.actions;
 
 export default lablayoutSlice.reducer;

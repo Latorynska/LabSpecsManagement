@@ -7,25 +7,51 @@ import {
   updateDoc,
   doc,
   deleteDoc,
+  setDoc,
 } from "firebase/firestore";
 import { db } from "../../config/firebase";
 
 // Create
 export const addRuanganData = createAsyncThunk(
-    "ruangan/addRuanganData",
-    async (formData, { rejectWithValue }) => {
-        console.log(formData);
-      try {
-        const docRef = await addDoc(collection(db, "ruangan"), formData);
-        const docSnapshot = await getDoc(docRef);
-        const newDoc = docSnapshot.data();
-        const newId = docRef.id;
-        return {...newDoc, id: newId};
-      } catch (error) {
-        return rejectWithValue(error.message);
-      }
+  'ruangan/addRuanganData',
+  async (formData, { rejectWithValue }) => {
+    try {
+      const ruanganCollectionRef = collection(db, 'ruangan');
+      const docRef = await addDoc(ruanganCollectionRef, formData);
+      const docSnapshot = await getDoc(docRef);
+      const newIdRuangan = docSnapshot.id;
+
+      const serverData = {
+        nomor: "server",
+        posisi: 0,
+        kodeInventaris: 'server',
+        prosesor: "",
+        vga: "",
+        ram: {
+            ukuran: '',
+            tipe: "ddr3",
+            konfigurasi: "1"
+        },
+        storage: ["","","","",],
+        motherboard: "",
+        case: "",
+        monitor: "",
+        psu: "",
+        keyboard: "",
+        mouse: "",
+        sound: "",
+        additional: "",
+        status: "warning",
+      };
+      const serverCollectionRef = collection(db, `ruangan/${newIdRuangan}/layout`);
+      await setDoc(doc(serverCollectionRef, 'server'), serverData);
+
+      return { ...formData, id: newIdRuangan };
+    } catch (error) {
+      return rejectWithValue(error.message);
     }
-  );
+  }
+);
   
 
 // Read

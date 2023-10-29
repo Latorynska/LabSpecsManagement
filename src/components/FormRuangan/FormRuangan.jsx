@@ -124,6 +124,7 @@ const FormRuangan = () => {
               deskripsi: "",
             });
             setSelectedOption("Tambah Baru");
+            dispatch(resetSelectedRuangan());
           })
           .catch((err) => {
             console.log(err);
@@ -143,6 +144,7 @@ const FormRuangan = () => {
               deskripsi: "",
             });
             setSelectedOption("Tambah Baru");
+            dispatch(resetSelectedRuangan());
           })
           .catch((err) => {
             console.log(err);
@@ -181,6 +183,7 @@ const FormRuangan = () => {
                 deskripsi: "",
               });
               Swal.fire('Deleted!', 'Ruangan berhasil dihapus!', 'success');
+              dispatch(resetSelectedRuangan());
             })
             .catch(err => {
               alert('Oops, ada error');

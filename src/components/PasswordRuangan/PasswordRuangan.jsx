@@ -14,7 +14,7 @@ const PasswordRuangan = () => {
                     className="mb-3"
                 />
             </div>
-            <div className="col-2 d-flex align-items-center">
+            <div className="col-2 d-flex align-items-center pb-3">
                 <Switch 
                     id={`statusPasswordRuangan`}
                     onChange={e => console.log('switched')}

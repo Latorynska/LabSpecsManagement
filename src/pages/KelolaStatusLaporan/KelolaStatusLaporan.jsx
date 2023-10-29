@@ -14,12 +14,12 @@ const KelolaStatusLaporan = () => {
   const { labId, kodeInventaris } = useParams();
   const dispatch = useDispatch();
 
-  const { loading, error, data, ruanganData, laporanData } = useSelector((state) => state.computer);
+  const { loading, error, data, ruanganData, laporanData, selectedLaporan } = useSelector((state) => state.computer);
 
   useEffect(() => {
     dispatch(fetchLaporan({ idRuangan: labId, computerId: kodeInventaris }));
     dispatch(fetchComputerAndRuangData({ idRuangan: labId, computerId: kodeInventaris }));
-  }, [dispatch, labId, kodeInventaris]);
+  }, [dispatch, labId, kodeInventaris, selectedLaporan]);
 
   useEffect(() => {
     if (loading) {
@@ -58,8 +58,8 @@ const KelolaStatusLaporan = () => {
         </div>
         <div className="col-6">
           <div className="row p-5">
-            <FormLaporanMasalah />
-            <FormPenyelesaianMasalah />
+            <FormLaporanMasalah idRuangan={labId} computerId={kodeInventaris} />
+            {selectedLaporan && <FormPenyelesaianMasalah />}
           </div>
         </div>
       </div>

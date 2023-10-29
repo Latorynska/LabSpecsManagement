@@ -10,6 +10,7 @@ import Switch from '../../components/Switch/Switch';
 import ButtonComp from '../../components/ButtonComp/ButtonComp';
 import FormDataKomputer from '../../components/FormDataKomputer/FormDataKomputer';
 import { useSelector } from 'react-redux';
+import PasswordRuangan from '../../components/PasswordRuangan/PasswordRuangan';
 
 const ManageKomputer = () => {
     const navigate = useNavigate();
@@ -36,21 +37,7 @@ const ManageKomputer = () => {
                                     onClick={() => navigate(-1)}
                                 />
                             </div>
-                            <div className="col-8">
-                                <Input 
-                                    labelPosition={`kiri`}
-                                    label={`Password`}
-                                    type={`password`}
-                                    className="" 
-                                />
-                            </div>
-                            <div className="col-2 d-flex align-items-center">
-                                <Switch 
-                                    id={`statusPasswordRuangan`}
-                                    onChange={e => console.log('switched')}
-                                />
-                                <FontAwesomeIcon icon={faCircleQuestion} className="text-white"/>
-                            </div>
+                            <PasswordRuangan />
                         </div>
                         <LabLayout access={'user'} />
                     </div>

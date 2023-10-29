@@ -121,7 +121,7 @@ const DetailKomputer = ({ data, ruangan }) => {
                 <td width={`auto`}>{data.mouse}</td>
             </tr>
             <tr className={`${textSpecs}`}>
-                <td width={`35%`}>Sound Device`</td>
+                <td width={`35%`}>Sound Device</td>
                 <td width={`5%`}>:</td>
                 <td width={`auto`}>{data.sound}</td>
             </tr>

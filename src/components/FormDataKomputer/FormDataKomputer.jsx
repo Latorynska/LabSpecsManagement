@@ -4,7 +4,7 @@ import Input from "../Input/Input";
 import Select from "../Select/Select";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addComp, deleteComp, fetchLayout, updateComp } from "../../redux/thunks/LabLayoutAPI";
+import { addComp, deleteComp, fetchLayout, switchPosition, updateComp } from "../../redux/thunks/LabLayoutAPI";
 import Swal from 'sweetalert2';
 import { resetSelectedComp } from "../../redux/slices/LabLayoutSlice";
 import { fetchRuanganData } from "../../redux/thunks/ruanganAPI";
@@ -20,6 +20,8 @@ const FormDataKomputer = () => {
     const [posisiTerakhir, setPosisiTerakhir] = useState(0);
     const [btnDisabled, setBtnDisabled] = useState(false);
     const [compIdSnapshot, setCompIdSnapshot] = useState('');
+    const [switchPositionOptions, setSwitchPositionOptions] = useState([]);
+    const [switchTarget, setSwitchTarget] = useState('');
     
     const [formData, setFormData] = useState(
         selectedComp ? selectedComp : 
@@ -74,6 +76,17 @@ const FormDataKomputer = () => {
         {label:'BAD', value:'bad'},
         {label:'EMPTY', value:'empty'}
     ];
+    const optionRam = [
+        { label: "DDR3", value: "ddr3" },
+        { label: "DDR4", value: "ddr4" },
+        { label: "DDR5", value: "ddr5" },
+    ]
+    const konfigurasiRamOptions = [
+        { label: "Single Channel", value: "1" },
+        { label: "Dual Channel", value: "2" },
+        { label: "Triple Channel", value: "3" },
+        { label: "Quad Channel", value: "4" },
+    ]
 
     
     const Toast = Swal.mixin({
@@ -98,13 +111,15 @@ const FormDataKomputer = () => {
                 }
             });
         }
+        else{
 
+        }
     }, []);
     
     useEffect(() => {
         if(selectedComp){
             setFormData(selectedComp);
-            setCompIdSnapshot(selectedComp.id);
+            setCompIdSnapshot(selectedComp.kodeInventaris);
         } else {
             resetFormData();
             setCompIdSnapshot('');
@@ -121,7 +136,35 @@ const FormDataKomputer = () => {
                 posisi: maxPosisi + 1,
             });
         }
+        else if(comps.length == 0){
+            setPosisiTerakhir(1);
+            setSwitchPositionOptions([{label:'',value:''}]);
+        } else if(comps.length > 0) {
+            setSwitchPositionOptions(
+                comps.map((comp) => {
+                    return {
+                        label: comp.posisi,
+                        value: comp.kodeInventaris
+                    }
+                })
+            )
+        }
+
     }, [selectedRuangan, comps]);
+
+    useEffect(() => {
+        if (comps.length === 0) {
+            setSwitchPositionOptions([{ label: '', value: '' }]);
+        } else if (comps.length > 0) {
+            const options = comps
+                .filter(comp => comp.kodeInventaris !== selectedComp?.kodeInventaris)
+                .map(comp => ({
+                    label: comp.posisi,
+                    value: comp.kodeInventaris
+                }));
+            setSwitchPositionOptions(options);
+        }
+    }, [comps, selectedComp]);    
 
     useEffect(() => {
         if (loading) {
@@ -280,7 +323,51 @@ const FormDataKomputer = () => {
             }
         }
     };
-    
+
+    const handleSwitchPositionSelect = (e) => {
+        setSwitchTarget(e.target.value);
+    }
+
+    const handleSwitchPositionSubmit = () => {
+        // console.log('selectedComp => ', switchTarget);
+        // console.log('selectedRuangan => ', selectedRuangan.id);
+        // console.log('compdomain => ', selectedComp.kodeInventaris);
+
+        if(selectedComp && switchTarget){
+            dispatch(switchPosition({
+                idRuangan: selectedRuangan.id, 
+                idCompTarget: switchTarget, 
+                idCompDomain: selectedComp.kodeInventaris
+            }))
+            .then(() => {
+                if(error){
+                    Swal.fire({
+                        title: 'oops, ada error',
+                        text: error.getMessage(),
+                        icon: 'error',
+                        timer: 3000,
+                      });
+                } else {
+                    dispatch(fetchLayout(selectedRuangan.id));
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Data Berhasil Dirubah!'
+                    });
+                    resetFormData();
+                    dispatch(resetSelectedComp());
+                }
+            })
+            .catch(err => {
+                Swal.fire({
+                    title: 'oops, ada error',
+                    text: err.getMessage(),
+                    icon: 'error',
+                    timer: 3000,
+                });
+                console.log(err);
+            })
+        }
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -291,9 +378,9 @@ const FormDataKomputer = () => {
         if (isValid || formData.status == 'bad' || formData.status == 'empty') {
             console.log("Form submitted:", formData);
             console.log('idruangan: ', selectedRuangan.id);
-            if(formData.kodeInventaris != ""){
+            if(formData.kodeInventaris != ""){ // update
                 if(compIdSnapshot){
-                    dispatch(updateComp(selectedRuangan.id, compIdSnapshot, formData))
+                    dispatch(updateComp({idRuangan: selectedRuangan.id, idSnapshot : compIdSnapshot, data : formData}))
                     .then(() => {
                         if(error){
                             Swal.fire({
@@ -320,7 +407,7 @@ const FormDataKomputer = () => {
                         });
                         console.log(err);
                     })
-                } else {
+                } else { // tambah
                     dispatch(addComp({idRuangan : selectedRuangan.id, data : formData}))
                         .then(()=> {
                             if(error){
@@ -406,6 +493,7 @@ const FormDataKomputer = () => {
                                 name={'nomor'}
                                 errorHelper={formError.nomor}
                                 value={formData.nomor}
+                                disabled={formData.kodeInventaris == "server" ? true : false}
                             />
                         </div>
                         <div className="col-6">
@@ -427,6 +515,7 @@ const FormDataKomputer = () => {
                         name={'kodeInventaris'}
                         errorHelper={formError.kodeInventaris}
                         value={formData.kodeInventaris}
+                        disabled={formData.kodeInventaris == "server" ? true : false}
                     />
                 </div>
             </div>
@@ -462,7 +551,7 @@ const FormDataKomputer = () => {
                                 type={`text`}
                                 inputGroupText={`GB`}
                                 name={"ram.ukuran"}
-                                value={formData.ram.ukuran}
+                                value={formData.ram?.ukuran}
                                 errorHelper={formError["ram.ukuran"]}
                             />
                         </div>
@@ -471,9 +560,9 @@ const FormDataKomputer = () => {
                                 onChange={handleInputChange}
                                 label={`Tipe`}
                                 type={`text`}
-                                options={[{ label: "DDR4", value: "ddr4" },{ label: "DDR3", value: "ddr3" },]}
+                                options={optionRam}
                                 name={"ram.tipe"}
-                                value={formData.ram.tipe}
+                                value={formData.ram?.tipe}
                                 errorHelper={formError["ram.tipe"]}
                             />
                         </div>
@@ -484,9 +573,9 @@ const FormDataKomputer = () => {
                         onChange={handleInputChange}
                         label={`Konfigurasi`}
                         type={`text`}
-                        options={[{ label: "Dual Channel", value: "2" },{ label: "Single Channel", value: "1" },]}
+                        options={konfigurasiRamOptions}
                         name={"ram.konfigurasi"}
-                        value={formData.ram.konfigurasi}
+                        value={formData.ram?.konfigurasi}
                         errorHelper={formError["ram.konfigurasi"]}
                     />
                 </div>
@@ -687,15 +776,19 @@ const FormDataKomputer = () => {
                     <div className="row">
                         <div className="col-3">
                             <Select 
-                                options={[{label: '1', value: 1}]}
+                                name={`switchPosition`}
+                                options={switchPositionOptions}
+                                onChange={handleSwitchPositionSelect}
+                                value={switchTarget}
                             />
                         </div>
                         <div className="col-auto">
                             <Button 
                                 text={`Tukar Posisi`}
                                 customClassName={`btnWarning`}
-                                options={[{label:'1', value: '1'}]}
-                                disabled={btnDisabled}
+                                type={`button`}
+                                disabled={selectedComp ? false : true}
+                                onClick={handleSwitchPositionSubmit}
                             />
                         </div>
                     </div>
