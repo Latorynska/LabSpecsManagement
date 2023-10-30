@@ -1,7 +1,7 @@
 import Button from '../Button/Button';
 import styles from './CustomInputWithButton.module.css';
 
-const CustomInputWithButton = ( { value, onChange, type, placeholder, name, className, id, label, labelPosition, disabled } ) => {
+const CustomInputWithButton = ( { value, onChange, onSubmit, type, placeholder, name, className, id, label, labelPosition, disabled, errorHelper } ) => {
     if( labelPosition === "kiri"){
         return (
             <>
@@ -19,6 +19,9 @@ const CustomInputWithButton = ( { value, onChange, type, placeholder, name, clas
                         id={id ? id : ''}
                         disabled={disabled ? disabled : false}
                     />
+                </div>
+                <div className='invalid-feedback d-block'>
+                    {errorHelper || ''}
                 </div>
             </>
         );
@@ -42,13 +45,16 @@ const CustomInputWithButton = ( { value, onChange, type, placeholder, name, clas
                     <div className="col-4 d-grid mx-auto">
                         <Button 
                             id="btnSubmitSearchUser"
-                            onClick={e => console.log(e.target)}
+                            onClick={onSubmit}
                             type="button"
-                            text="Submit"
+                            text="Search"
                             customClassName={`btnPrimary`}
                             disabled={disabled ? disabled : false}
                         />
                     </div>
+                </div>
+                <div className='invalid-feedback d-block'>
+                    {errorHelper || ''}
                 </div>
             </>
         );

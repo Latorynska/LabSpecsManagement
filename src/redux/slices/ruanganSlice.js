@@ -19,6 +19,9 @@ const ruanganSlice = createSlice({
       state.selectedRuangan = null;
       localStorage.removeItem('selectedRuangan');
     },
+    resetRuanganData : (state) => {
+      state.ruanganData = [];
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -79,6 +82,6 @@ const ruanganSlice = createSlice({
   },
 });
 
-export const { setSelectedRuangan, resetSelectedRuangan } = ruanganSlice.actions;
+export const { setSelectedRuangan, resetSelectedRuangan, resetRuanganData } = ruanganSlice.actions;
 
 export default ruanganSlice.reducer;

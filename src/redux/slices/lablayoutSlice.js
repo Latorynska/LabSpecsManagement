@@ -48,6 +48,7 @@ const lablayoutSlice = createSlice({
       })
       .addCase(addComp.rejected, (state, action) => {
         state.loading = false;
+        console.log(action.payload);
         state.error = action.payload;
       })
       .addCase(updateComp.pending, (state) => {
@@ -55,13 +56,20 @@ const lablayoutSlice = createSlice({
         state.error = '';
       })
       .addCase(updateComp.fulfilled, (state, action) => {
-        const updatedCompIndex = state.comps.findIndex((comp) => comp.id === action.payload.snapshotId);
+        const updatedCompIndex = state.comps.findIndex((comp) => comp.kodeInventaris === action.payload.snapshotId);
         if (updatedCompIndex !== -1) {
-          state.comps[updatedCompIndex] = action.payload;
+          const updatedComps = [...state.comps];
+          updatedComps[updatedCompIndex] = action.payload;
+          return {
+            ...state,
+            comps: updatedComps,
+            loading: false,
+            error: '',
+          };
         }
-        state.loading = false;
-        state.error = '';
+        return state;
       })
+      
       .addCase(updateComp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;

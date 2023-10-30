@@ -1,8 +1,9 @@
 .btnComp{
     display: flex;
-    width: 99px;
-    height: 88px;
-    padding: 9px 17px;
+    width: 100px;
+    height: 100px;
+    margin: 0;
+    padding: 0;
     justify-content: center;
     align-items: center; 
     font-size: 20px;

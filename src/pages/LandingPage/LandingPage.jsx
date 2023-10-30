@@ -1,20 +1,54 @@
+import { useEffect, useState } from "react";
 import CustomInputWithButton from "../../components/CustomInputWithButton/CustomInputWithButton";
 import GuideInformation from "../../components/GuideInformation/GuideInformation";
 import LabLayout from "../../components/LabLayout/LabLayout";
 import ListNotifikasi from "../../components/ListNotifikasi/ListNotifikasi";
 import RuanganButtonList from "../../components/RuanganButtonList/RuanganButtonList";
+import { useDispatch } from "react-redux";
+import { resetRuanganData, resetSelectedRuangan } from "../../redux/slices/ruanganSlice";
+import { fetchRuanganData } from "../../redux/thunks/ruanganAPI";
+import { resetSelectedLaporan } from "../../redux/slices/computerSlice";
 
 const LandingPage = () => {
+    const dispatch = useDispatch();
+    const [usernameSearch, setUsernameSearch] = useState('');
+    const [usernameSearchError, setUsernameSearchError] = useState('');
 
+
+    // useEffect(() => {
+    //     dispatch(resetSelectedLaporan());
+    //     dispatch(resetSelectedRuangan());
+    //     dispatch(resetRuanganData());
+
+    //     return () => {
+    //         dispatch(resetSelectedRuangan());
+    //         dispatch(resetSelectedRuangan());
+    //         dispatch(resetRuanganData());
+    //     }
+    // }, []);
+
+    const handleSearchInputChange = (e) => {
+        setUsernameSearch(e.target.value)
+    }
+    const handleSubmitSearch = () => {
+        if(usernameSearch){
+            dispatch(fetchRuanganData(usernameSearch));
+        }
+        else{
+            setUsernameSearchError("")
+        }
+    }
     return ( 
         <>
             <section className="">
                 <div className="row">
                     <div className="col-5 p-5">
                         <CustomInputWithButton 
-                            value=""
-                            onChange={e => console.log(e.target.value)}
+                            value={usernameSearch}
+                            onChange={handleSearchInputChange}
                             label={`Instansi`}
+                            errorHelper={usernameSearchError}
+                            onSubmit={handleSubmitSearch}
                         />
                         <RuanganButtonList />
                         <ListNotifikasi />
@@ -23,7 +57,7 @@ const LandingPage = () => {
                         <GuideInformation />
                     </div>
                     <div className="col-5">
-                        <LabLayout />
+                        <LabLayout access={`guest`}/>
                     </div>
                 </div>
             </section>

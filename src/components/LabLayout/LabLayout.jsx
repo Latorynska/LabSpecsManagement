@@ -18,7 +18,7 @@ const LabLayout = ({ access }) => {
     const [computerData, setComputerData] = useState([]);
 
     useEffect(() => {
-        if (selectedRuangan && comps.length > 0) {
+        if (selectedRuangan && comps && comps.length > 0) {
             const { konfigurasi } = selectedRuangan;
             const rows = [];
             
@@ -94,8 +94,8 @@ const LabLayout = ({ access }) => {
                                                 key={columnIndex}
                                                 text={item.status == 'empty' ? '-' : item.nomor}
                                                 computerStatus={item.status}
-                                                to={access == "user" ? `/manage/${selectedRuangan.id}` : `/`}
-                                                onClick={() => { dispatch(setSelectedComp(item))}} 
+                                                to={access == "user" ? `/manage/${selectedRuangan.id}` : item.status == "good" ? `/guest/${selectedRuangan.id}/${item.kodeInventaris}` : ``}
+                                                onClick={() => { dispatch(setSelectedComp(item))}}
                                             />
                                         ) : (
                                             <ButtonComp

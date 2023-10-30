@@ -30,7 +30,7 @@ export const fetchLayout = createAsyncThunk(
           }
         });
   
-        console.log(subcollectionData);
+        // console.log(subcollectionData);
         return subcollectionData;
       } catch (error) {
         console.log(error);
@@ -57,21 +57,27 @@ export const fetchServerData = createAsyncThunk(
     }
 );
 
+// add
+export const addComp = createAsyncThunk("lablayout/addComp", async ({ idRuangan, data }, { rejectWithValue }) => {
+  try {
+      const subcollectionRef = collection(db, `ruangan/${idRuangan}/layout`);
 
-export const addComp = createAsyncThunk("lablayout/addComp",async ({ idRuangan, data }, { rejectWithValue }) => {
-        console.log('idruangan => ', idRuangan);
-        console.log('data => ', data);
-        try {
-            const subcollectionRef = doc(db, `ruangan/${idRuangan}/layout/${data.kodeInventaris}`);
-            await setDoc(subcollectionRef, data);
-            console.log(data);
-            return data;
-        } catch (error) {
-            console.log(error);
-            return rejectWithValue(error.message);
-        }
-    }
-);
+      const querySnapshot = await getDocs(subcollectionRef);
+      const documentExists = querySnapshot.docs.some((doc) => doc.id === data.kodeInventaris);
+
+      if (documentExists) {
+          throw new Error("Document with the same id already exists.");
+      }
+
+      const subdocRef = doc(subcollectionRef, data.kodeInventaris);
+      await setDoc(subdocRef, data);
+
+      return data;
+  } catch (error) {
+      console.error(error);
+      return rejectWithValue(error);
+  }
+});
 
 export const updateComp = createAsyncThunk(
     "lablayout/updateComp",
@@ -86,8 +92,7 @@ export const updateComp = createAsyncThunk(
             } else {
                 await updateDoc(oldDocRef, data);
             }
-
-            return data;
+            return {...data, snapshotId: idSnapshot};
         } catch (error) {
             console.log(error);
             return rejectWithValue(error.message);
@@ -131,7 +136,6 @@ export const switchPosition = createAsyncThunk(
         ]);
   
         if (!targetData.exists() || !domainData.exists()) {
-          console.log("One or both documents do not exist.");
           return rejectWithValue("One or both documents do not exist.");
         }
   
@@ -143,7 +147,7 @@ export const switchPosition = createAsyncThunk(
         };
         await runTransaction(db, switchTransaction);
   
-        console.log("Switched positions successfully.");
+        // console.log("Switched positions successfully.");
       } catch (error) {
         console.log(error);
         return rejectWithValue(error.message);

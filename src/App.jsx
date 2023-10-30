@@ -14,6 +14,7 @@ import store from './redux/store';
 import PrivateRoute from './routes/PrivateRoute';
 import Logout from './pages/Logout/Logout';
 import GuestRoute from './routes/GuestRoute';
+import GuestLaporan from './pages/GuestLaporan/GuestLaporan';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
                 <Route path='/login' element={ <Login /> } />
                 <Route path='/register' element={ <Register /> } />
               </Route>
+              <Route path='/guest/:labId/:kodeInventaris' element={ <GuestLaporan /> } />
               <Route element={ <PrivateRoute />}>
                 <Route path='/dashboard' element={ <Dashboard /> } />
                 <Route path='/manage' element={ <Manage /> } />

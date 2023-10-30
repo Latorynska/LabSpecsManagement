@@ -37,7 +37,7 @@ const ManageKomputer = () => {
                                     onClick={() => navigate(-1)}
                                 />
                             </div>
-                            <PasswordRuangan />
+                            {/* <PasswordRuangan /> */}
                         </div>
                         <LabLayout access={'user'} />
                     </div>

@@ -121,12 +121,12 @@ export const fetchComputerAndRuangData = createAsyncThunk(
           const ruanganData = await getDoc(ruanganRef);
   
           if (!ruanganData.exists()) {
-          throw new Error("Ruangan not found");
+            throw new Error("Ruangan not found");
           }
-  
+          
           const ruangan = ruanganData.data();
-  
-          return { computer, ruangan };
+
+          return { computer, ruangan:{...ruangan, id: idRuangan}};
       } catch (error) {
           console.error(error);
           return rejectWithValue(error.message);
@@ -138,10 +138,10 @@ export const fetchComputerAndRuangData = createAsyncThunk(
 export const createPenyelesaian = createAsyncThunk(
   "penyelesaian/createPenyelesaian",
   async ({ idRuangan, computerId, laporanId, penyelesaianData }, { rejectWithValue }) => {
-    console.log('received ruangan => ', idRuangan);
-    console.log('received computer => ', computerId);
-    console.log('received laporan => ', laporanId);
-    console.log('received data => ', penyelesaianData);
+    // console.log('received ruangan => ', idRuangan);
+    // console.log('received computer => ', computerId);
+    // console.log('received laporan => ', laporanId);
+    // console.log('received data => ', penyelesaianData);
     try {
       const laporanRef = doc(db, `ruangan/${idRuangan}/layout/${computerId}/laporan/${laporanId}`);
       const laporanDoc = await getDoc(laporanRef);

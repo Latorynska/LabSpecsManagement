@@ -65,10 +65,10 @@ const FormPenyelesaianMasalah = () => {
                 details: 'Detail penyelesaian tidak boleh kosong'
             })
         } else {
-            console.log('send ruangan => ', ruanganData.id);
-            console.log('send computer => ', data.kodeInventaris);
-            console.log('send laporan => ', selectedLaporan.id);
-            console.log('send data => ', formData);
+            // console.log('send ruangan => ', ruanganData.id);
+            // console.log('send computer => ', data.kodeInventaris);
+            // console.log('send laporan => ', selectedLaporan.id);
+            // console.log('send data => ', formData);
             setFormError({details:'',status:''});
             dispatch(createPenyelesaian({
                 laporanId: selectedLaporan.id, 

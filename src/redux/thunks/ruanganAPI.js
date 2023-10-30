@@ -8,6 +8,8 @@ import {
   doc,
   deleteDoc,
   setDoc,
+  query,
+  where,
 } from "firebase/firestore";
 import { db } from "../../config/firebase";
 
@@ -56,22 +58,28 @@ export const addRuanganData = createAsyncThunk(
 
 // Read
 export const fetchRuanganData = createAsyncThunk(
-    "ruangan/fetchRuanganData",
-    async (_, { rejectWithValue }) => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "ruangan"));
-        const ruanganData = [];
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          const id = doc.id;
-          ruanganData.push({ ...data, id: id, });
-        });
-        return ruanganData;
-      } catch (error) {
-        return rejectWithValue(error.message);
-      }
+  "ruangan/fetchRuanganData",
+  async (owner, { rejectWithValue }) => { // Pass 'owner' as a parameter
+    try {
+      const ruanganData = [];
+
+      // Create a query that filters based on the 'owner' field
+      const ruanganQuery = query(collection(db, "ruangan"), where("owner", "==", owner));
+
+      const querySnapshot = await getDocs(ruanganQuery);
+      
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const id = doc.id;
+        ruanganData.push({ ...data, id: id });
+      });
+
+      return ruanganData;
+    } catch (error) {
+      return rejectWithValue(error.message);
     }
-  );
+  }
+);
   
 
 // Update
@@ -89,12 +97,23 @@ export const updateRuanganData = createAsyncThunk(
 );
 
 // Delete
+async function deleteLayoutSubcollection(idRuangan) {
+  const ruanganDocRef = doc(db, "ruangan", idRuangan);
+  const layoutCollectionRef = collection(ruanganDocRef, "layout");
+  const layoutQuery = query(layoutCollectionRef);
+  const layoutSnapshot = await getDocs(layoutQuery);
+  layoutSnapshot.forEach(async (doc) => {
+    await deleteDoc(doc.ref);
+  });
+}
+
 export const deleteRuanganData = createAsyncThunk(
   "ruangan/deleteRuanganData",
-  async (id, { rejectWithValue }) => {
+  async (idRuangan, { rejectWithValue }) => {
     try {
-      await deleteDoc(doc(db, "ruangan", id));
-      return id;
+      await deleteLayoutSubcollection(idRuangan);
+      await deleteDoc(doc(db, "ruangan", idRuangan));
+      return idRuangan;
     } catch (error) {
       return rejectWithValue(error.message);
     }

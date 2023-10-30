@@ -17,16 +17,16 @@ const FormRuangan = () => {
   const selectedRuangan = useSelector((state) => state.ruangan.selectedRuangan);
   const owner = useSelector(state => state.auth.userData.username);
 
-  const [selectedOption, setSelectedOption] = useState(selectedRuangan?.id ? "Update Ruangan" : "Tambah Baru");
+  const [selectedOption, setSelectedOption] = useState("Tambah Baru");
   const [submitDisabled, setSubmitDisabled] = useState(false);
 
   const [formData, setFormData] = useState({
-    id: selectedRuangan?.id || "",
-    namaRuangan: selectedRuangan?.namaRuangan || "",
-    konfigurasi: selectedRuangan?.konfigurasi || "",
-    posisiServer: selectedRuangan?.posisiServer || "",
-    deskripsi: selectedRuangan?.deskripsi || "",
-    owner: owner || "",
+    id: "",
+    namaRuangan: "",
+    konfigurasi: "3",
+    posisiServer: "Kiri Atas",
+    deskripsi: "",
+    owner: owner,
   });
   const [formError, setFormError] = useState({
     namaRuangan: "",
@@ -43,6 +43,14 @@ const FormRuangan = () => {
     { label: "Kiri Atas", value: "Kiri Atas" },
     { label: "Kanan Atas", value: "Kanan Atas" },
   ];
+  
+  const optionsRuangan = [
+    ...ruanganData.map((ruangan) => ({
+      value: ruangan.id,
+      label: ruangan.namaRuangan,
+    })),
+    { value: "Tambah Baru", label: "Tambah Baru" },
+  ];
 
   const Toast = Swal.mixin({
     toast: true,
@@ -57,7 +65,15 @@ const FormRuangan = () => {
   });
 
   useEffect(() => {
-    dispatch(fetchRuanganData());
+    dispatch(fetchRuanganData(owner));
+    setFormData({
+      id: "",
+      namaRuangan: "",
+      konfigurasi: "3",
+      posisiServer: "Kiri Atas",
+      deskripsi: "",
+      owner: owner,
+    })
   }, []);
 
   useEffect(() => {
@@ -94,9 +110,10 @@ const FormRuangan = () => {
       setFormData({
         id: "",
         namaRuangan: "",
-        konfigurasi: "",
-        posisiServer: "",
+        konfigurasi: "3",
+        posisiServer: "Kiri Atas",
         deskripsi: "",
+        owner: owner,
       });
       dispatch(resetSelectedRuangan());
     } else {
@@ -119,9 +136,10 @@ const FormRuangan = () => {
             setFormData({
               id: "",
               namaRuangan: "",
-              konfigurasi: "",
-              posisiServer: "",
+              konfigurasi: "3",
+              posisiServer: "Kiri Atas",
               deskripsi: "",
+              owner: owner,
             });
             setSelectedOption("Tambah Baru");
             dispatch(resetSelectedRuangan());
@@ -139,9 +157,10 @@ const FormRuangan = () => {
             setFormData({
               id: "",
               namaRuangan: "",
-              konfigurasi: "",
-              posisiServer: "",
+              konfigurasi: "3",
+              posisiServer: "Kiri Atas",
               deskripsi: "",
+              owner: owner
             });
             setSelectedOption("Tambah Baru");
             dispatch(resetSelectedRuangan());
@@ -178,9 +197,10 @@ const FormRuangan = () => {
               setFormData({
                 id: "",
                 namaRuangan: "",
-                konfigurasi: "",
-                posisiServer: "",
+                konfigurasi: "3",
+                posisiServer: "Kiri Atas",
                 deskripsi: "",
+                owner: owner,
               });
               Swal.fire('Deleted!', 'Ruangan berhasil dihapus!', 'success');
               dispatch(resetSelectedRuangan());
@@ -193,14 +213,6 @@ const FormRuangan = () => {
       });
     }
   };
-
-  const optionsRuangan = [
-    ...ruanganData.map((ruangan) => ({
-      value: ruangan.id,
-      label: ruangan.namaRuangan,
-    })),
-    { value: "Tambah Baru", label: "Tambah Baru" },
-  ];
 
   const isValid = () => {
     const updatedFormError = {
@@ -222,7 +234,7 @@ const FormRuangan = () => {
             <div className="mb-3">
                 <Select
                     options={optionsRuangan}
-                    label="Pilih Operasi"
+                    label="Pilih Operasi Ruangan"
                     value={selectedOption}
                     name="operation"
                     onChange={handleSelectChange}

@@ -8,9 +8,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createLaporan, fetchComputerAndRuangData } from '../../redux/thunks/computerAPI';
 import Swal from 'sweetalert2';
 import { resetSelectedLaporan } from '../../redux/slices/computerSlice';
+import { useNavigate } from 'react-router-dom';
 
-const FormLaporanMasalah = ({ idRuangan, computerId }) => {
+const FormLaporanMasalah = ({ idRuangan, computerId, access }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { selectedLaporan, loading, error, ruanganData, data } = useSelector(state => state.computer);
     const [formData, setFormData] = useState(
         selectedLaporan ? selectedLaporan : 
@@ -160,14 +162,17 @@ const FormLaporanMasalah = ({ idRuangan, computerId }) => {
                         timer: 3000,
                     });
                 } else {
+                    dispatch(resetSelectedLaporan());
+                    dispatch(fetchComputerAndRuangData({idRuangan: idRuangan, computerId: computerId}));
+                    resetFormData();
                     Swal.fire({
                         title: 'Laporan dibuat!',
                         icon: 'success',
                         timer: 3000,
-                    });
-                    dispatch(resetSelectedLaporan());
-                    dispatch(fetchComputerAndRuangData({idRuangan: ruanganData.id, computerId: data.kodeInventaris}));
-                    resetFormData();
+                    })
+                    if(access && access == "guest"){
+                        navigate('/', { state: { fromGuestLaporan: true } });
+                    }
                 }
             })
             .catch(err => {

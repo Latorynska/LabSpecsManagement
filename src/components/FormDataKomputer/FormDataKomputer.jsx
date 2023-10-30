@@ -4,7 +4,7 @@ import Input from "../Input/Input";
 import Select from "../Select/Select";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addComp, deleteComp, fetchLayout, switchPosition, updateComp } from "../../redux/thunks/LabLayoutAPI";
+import { addComp, deleteComp, fetchLayout, fetchServerData, switchPosition, updateComp } from "../../redux/thunks/LabLayoutAPI";
 import Swal from 'sweetalert2';
 import { resetSelectedComp } from "../../redux/slices/LabLayoutSlice";
 import { fetchRuanganData } from "../../redux/thunks/ruanganAPI";
@@ -17,7 +17,7 @@ const FormDataKomputer = () => {
     const ruanganData = useSelector(state => state.ruangan.ruanganData);
     const { ruanganID } = useParams();
 
-    const [posisiTerakhir, setPosisiTerakhir] = useState(0);
+    const [posisiTerakhir, setPosisiTerakhir] = useState(1);
     const [btnDisabled, setBtnDisabled] = useState(false);
     const [compIdSnapshot, setCompIdSnapshot] = useState('');
     const [switchPositionOptions, setSwitchPositionOptions] = useState([]);
@@ -27,7 +27,7 @@ const FormDataKomputer = () => {
         selectedComp ? selectedComp : 
         {
         nomor: "",
-        posisi: posisiTerakhir + 1,
+        posisi: posisiTerakhir,
         kodeInventaris: "",
         prosesor: "",
         vga: "",
@@ -102,6 +102,12 @@ const FormDataKomputer = () => {
     });
 
     useEffect(() => {
+        if(comps.length > 0){
+            const maxPosisi = Math.max(...comps.map((comp) => comp.posisi));
+            setPosisiTerakhir(maxPosisi + 1);
+        } else {
+            setPosisiTerakhir(1);
+        }
         if(!selectedRuangan){
             dispatch(fetchRuanganData())
             .then(() => {
@@ -110,9 +116,6 @@ const FormDataKomputer = () => {
                     dispatch(setSelectedRuangan(target));
                 }
             });
-        }
-        else{
-
         }
     }, []);
     
@@ -148,6 +151,8 @@ const FormDataKomputer = () => {
                     }
                 })
             )
+            const maxPosisi = Math.max(...comps.map((comp) => comp.posisi));
+            setPosisiTerakhir(maxPosisi + 1);
         }
 
     }, [selectedRuangan, comps]);
@@ -200,27 +205,20 @@ const FormDataKomputer = () => {
           "status",
         ];
     
-        console.log("Field validation details:");
         const fieldValidations = requiredFields.map((field) => {
           if (field.startsWith("ram.")) {
             const ramField = field.split("ram.")[1];
             const isFieldValid =
-              ramField === "ukuran" ? (data.ram[ramField] > 0) : data.ram[ramField];
-            console.log(`${field}: ${isFieldValid}`);
+                ramField === "ukuran" ? (data.ram[ramField] > 0) : data.ram[ramField];
             return isFieldValid;
           } else {
             const isFieldValid = data[field];
-            console.log(`${field}: ${isFieldValid}`);
             return isFieldValid;
           }
         });
-    
-        console.log("Storage validation:");
         const isStorageValid = data.storage.some((item) => item);
-        console.log(`isStorageValid: ${isStorageValid}`);
     
         const isFormValid = fieldValidations.every((isValid) => isValid) && isStorageValid;
-        console.log(`isFormValid: ${isFormValid}`);
     
         return isFormValid;
     };
@@ -258,12 +256,11 @@ const FormDataKomputer = () => {
             updatedFormError.storage = "";
         }
     
-        if (data["ram.ukuran"] !== '' && parseInt(data["ram.ukuran"]) <= 0) {
-            updatedFormError["ram.ukuran"] = "Ram ukuran harus lebih dari 0";
+        if (data.ram.ukuran == "" || parseInt(data.ram.ukuran) <= 0) {
+            updatedFormError["ram.ukuran"] = "Ukuran ram tidak boleh kosong dan lebih dari 0";
         } else {
             updatedFormError["ram.ukuran"] = "";
         }
-    
         return updatedFormError;
     };
     const resetFormData = () => {
@@ -276,7 +273,7 @@ const FormDataKomputer = () => {
             ram: {
                 ukuran: '',
                 tipe: 'ddr3',
-                konfigurasi: ""
+                konfigurasi: "1"
             },
             storage: ["","","","",],
             motherboard: "",
@@ -329,9 +326,6 @@ const FormDataKomputer = () => {
     }
 
     const handleSwitchPositionSubmit = () => {
-        // console.log('selectedComp => ', switchTarget);
-        // console.log('selectedRuangan => ', selectedRuangan.id);
-        // console.log('compdomain => ', selectedComp.kodeInventaris);
 
         if(selectedComp && switchTarget){
             dispatch(switchPosition({
@@ -396,6 +390,9 @@ const FormDataKomputer = () => {
                             });
                             dispatch(resetSelectedComp());
                             resetFormData();
+                            if(compIdSnapshot == "server"){
+                                dispatch(fetchServerData(selectedRuangan.id));
+                            }
                         }
                     })
                     .catch(err => {
@@ -409,14 +406,14 @@ const FormDataKomputer = () => {
                     })
                 } else { // tambah
                     dispatch(addComp({idRuangan : selectedRuangan.id, data : formData}))
-                        .then(()=> {
-                            if(error){
+                        .then((res)=> {
+                            if(res.error){
                                 Swal.fire({
                                     title: 'oops, ada error',
-                                    text: error.getMessage(),
+                                    text: res.payload.message,
                                     icon: 'error',
                                     timer: 3000,
-                                  });
+                                });
                             } else {
                                 dispatch(fetchLayout(selectedRuangan.id));
                                 Toast.fire({
@@ -438,9 +435,19 @@ const FormDataKomputer = () => {
                         });
                 }
             } else {
+                Swal.fire({
+                    title: 'Masih ada informasi yang belum diisi',
+                    icon: 'error',
+                    timer: 3000,
+                });
                 setFormError({ ...formError, kodeInventaris: "kode inventaris tidak boleh kosong"});
             }
         } else {
+            Swal.fire({
+                title: 'Masih ada informasi yang belum diisi',
+                icon: 'error',
+                timer: 3000,
+            });
             setFormError(updatedFormError);
         }
     };
