@@ -15,9 +15,9 @@ const LandingPage = () => {
     const [usernameSearchError, setUsernameSearchError] = useState('');
 
 
-    // useEffect(() => {
+    useEffect(() => {
     //     dispatch(resetSelectedLaporan());
-    //     dispatch(resetSelectedRuangan());
+        dispatch(resetSelectedRuangan());
     //     dispatch(resetRuanganData());
 
     //     return () => {
@@ -25,22 +25,34 @@ const LandingPage = () => {
     //         dispatch(resetSelectedRuangan());
     //         dispatch(resetRuanganData());
     //     }
-    // }, []);
+    }, []);
 
     const handleSearchInputChange = (e) => {
         setUsernameSearch(e.target.value)
-    }
-    const handleSubmitSearch = () => {
-        if(usernameSearch){
-            dispatch(fetchRuanganData(usernameSearch));
+        if(e.target.value == ""){
+            setUsernameSearchError("silahkan masukkan username terlebih dahulu");
         }
         else{
-            setUsernameSearchError("")
+            setUsernameSearchError("");
+        }
+    }
+
+    const handleSubmitSearch = () => {
+        if(usernameSearch){
+            dispatch(fetchRuanganData(usernameSearch))
+            .then((res) => {
+                if(res.payload.length < 1){
+                    setUsernameSearchError("nama pengguna tidak ditemukan");   
+                }
+            });
+        }
+        else{
+            setUsernameSearchError("silahkan masukkan username terlebih dahulu");
         }
     }
     return ( 
         <>
-            <section className="">
+            <section className="container-fluid">
                 <div className="row">
                     <div className="col-5 p-5">
                         <CustomInputWithButton 

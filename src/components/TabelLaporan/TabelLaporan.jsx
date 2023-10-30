@@ -13,9 +13,9 @@ const TabelLaporan = () => {
     const selectLaporan = (laporan) => {
         dispatch(setSelectedLaporan(laporan));
     }
-    useEffect(() => {
-        console.log(laporanData);
-    }, []);
+    // useEffect(() => {
+    //     console.log(laporanData);
+    // }, []);
 
     return ( 
         <>

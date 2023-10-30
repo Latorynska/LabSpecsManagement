@@ -5,9 +5,9 @@ import { useSelector } from 'react-redux';
 import { text } from '@fortawesome/fontawesome-svg-core';
 
 const DetailKomputer = ({ data, ruangan }) => {
-    useEffect(() => {
-        console.log(data);
-    }, []);
+    // useEffect(() => {
+    //     console.log(data);
+    // }, []);
     function getRamConfiguration(konfigurasi) {
         switch (konfigurasi) {
           case "1":

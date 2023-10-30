@@ -6,43 +6,33 @@ import {
     cardInformationContainer
 } from './Dashboard.module.css';
 import LabSummary from '../../components/LabSummary/LabSummary';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchRuanganData } from '../../redux/thunks/ruanganAPI';
+import { fetchSummary } from '../../redux/thunks/dashboardAPI';
 
 const Dashboard = () => {
-    const userData = useSelector(state => state.auth.userData);
-    const [labData, setLabData] = useState([
-        {
-            nama: 'Lab Dasar',
-            bad: 0,
-            good: 18,
-            warning: 0,
-        },
-        {
-            nama: 'Lab Jarkom',
-            bad: 3,
-            good: 18,
-            warning: 1,
-        },
-        {
-            nama: 'Lab Multimedia',
-            bad: 0,
-            good: 18,
-            warning: 2,
-        },
-    ]);
+    const dispatch = useDispatch();
+    const owner = useSelector(state => state.auth.userData.username);
+    const { ruanganData } = useSelector(state => state.ruangan);
+    const { labSummaryData } = useSelector(state => state.dashboard);
+
     useEffect(() => {
-        console.log(userData);
+        dispatch(fetchRuanganData(owner));
+        dispatch(fetchSummary(ruanganData));
     }, []);
+    useEffect(() => {
+        dispatch(fetchSummary(ruanganData))
+    }, [ruanganData]);
 
     return (
         <>
             <div className={`${dashboardContainer}`}>
-                <div className={`${dashboardTitle}`}>Selamat Datang Kembali {userData.username}!</div>
+                <div className={`${dashboardTitle}`}>Selamat Datang Kembali {owner}!</div>
                 <div className={`${dashboardSubTitle}`}>Ada informasi singkat nih buatmu terkait lab mu!</div>
 
                 <div className={`d-flex justify-content-center gap-5 ${cardInformationContainer}`}>
                     {
-                        labData.map((lab, index) => (
+                        labSummaryData?.map((lab, index) => (
                             <LabSummary 
                                 key={index}
                                 labData={lab}

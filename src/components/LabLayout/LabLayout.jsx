@@ -49,6 +49,15 @@ const LabLayout = ({ access }) => {
         else{
             dispatch(resetCompsAndServer());
         }
+    }, []);
+    useEffect(() => {
+        if (selectedRuangan) {
+            dispatch(fetchLayout(selectedRuangan.id));
+            dispatch(fetchServerData(selectedRuangan.id))
+        }
+        else{
+            dispatch(resetCompsAndServer());
+        }
     }, [selectedRuangan, dispatch]);
 
     useEffect(() => {

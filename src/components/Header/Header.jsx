@@ -28,10 +28,10 @@ const Header = () => {
                 label: 'Manage',
                 url: '/manage',
             },
-            {
-                label: 'Profile',
-                url: '/profile',
-            },
+            // {
+            //     label: 'Profile',
+            //     url: '/profile',
+            // },
             {
                 label: 'Logout',
                 url: '/logout',

@@ -15,6 +15,7 @@ import PasswordRuangan from '../../components/PasswordRuangan/PasswordRuangan';
 const ManageKomputer = () => {
     const navigate = useNavigate();
     const selectedComp = useSelector(state => state.lablayout.selectedComp);
+    const { selectedRuangan } = useSelector(state => state.ruangan)
     useEffect(() => {
         console.log('euy');
     }, []);
@@ -22,7 +23,7 @@ const ManageKomputer = () => {
     return (
         <>
             <div className={`text-center ${titleManageKomputer} pt-5`}>
-                Anda sedang mengelola : Lab Jaringan Komputer
+                Anda sedang mengelola : {selectedRuangan.namaRuangan}
             </div>
             <div className="row m-0 p-0">
                 <div className="col-5 ps-5 pt-5">

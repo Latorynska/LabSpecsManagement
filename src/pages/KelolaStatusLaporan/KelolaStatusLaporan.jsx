@@ -36,10 +36,10 @@ const KelolaStatusLaporan = () => {
     }
   }, [loading]);
 
-  useEffect(() => {
-    console.log('Computer Data:', data);
-    console.log('Ruangan Data:', ruanganData);
-  }, [data, ruanganData]);
+  // useEffect(() => {
+  //   console.log('Computer Data:', data);
+  //   console.log('Ruangan Data:', ruanganData);
+  // }, [data, ruanganData]);
 
   return (
     loading ? <p>loading</p> :
