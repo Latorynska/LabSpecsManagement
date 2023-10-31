@@ -15,6 +15,7 @@ import PrivateRoute from './routes/PrivateRoute';
 import Logout from './pages/Logout/Logout';
 import GuestRoute from './routes/GuestRoute';
 import GuestLaporan from './pages/GuestLaporan/GuestLaporan';
+import AiChat from './pages/AiChat/AiChat';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
                 <Route path='/manage' element={ <Manage /> } />
                 <Route path='/manage/:labId' element={ <ManageKomputer /> } />
                 <Route path='/manage/:labId/:kodeInventaris' element={ <KelolaStatusLaporan /> } />
+                <Route path='/manage/:labId/:kodeInventaris/aichat' element={ <AiChat /> } />
                 <Route path='/logout' element={ <Logout /> } />
               </Route>
             </Routes>

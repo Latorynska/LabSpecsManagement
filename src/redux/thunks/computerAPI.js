@@ -77,7 +77,22 @@ export const fetchLaporan = createAsyncThunk(
       querySnapshot.forEach((doc) => {
         laporanData.push({ ...doc.data(), id: doc.id, });
       });
+      // sort dengan tanggal terakhir (paling baru menurut data tanggal yang disimpan)
+      laporanData.sort((a, b) => {
+        const dateA = new Date(
+          parseInt(a.tanggal.split('/')[2]),
+          parseInt(a.tanggal.split('/')[1]) - 1,  // Month (0-based)
+          parseInt(a.tanggal.split('/')[0]) 
+        );
+        const dateB = new Date(
+          parseInt(b.tanggal.split('/')[2]),
+          parseInt(b.tanggal.split('/')[1]) - 1,
+          parseInt(b.tanggal.split('/')[0]) 
+        );
 
+        // Sort in descending order (most recent first)
+        return dateB - dateA;
+      });
       return laporanData;
     } catch (error) {
       console.error(error);

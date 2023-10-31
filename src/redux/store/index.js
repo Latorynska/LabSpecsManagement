@@ -4,6 +4,7 @@ import ruanganReducer from '../slices/ruanganSlice';
 import lablayoutReducer from '../slices/LabLayoutSlice';
 import computerReducer from '../slices/computerSlice';
 import dashboardReducer from '../slices/dashboardSlice';
+import aiReducer from '../slices/aiSlice'
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     lablayout: lablayoutReducer,
     computer: computerReducer,
     dashboard: dashboardReducer,
+    ai: aiReducer,
   },
 });
 

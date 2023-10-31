@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createPenyelesaian, deleteLaporan, fetchComputerAndRuangData } from '../../redux/thunks/computerAPI';
 import Swal from 'sweetalert2';
 import { resetSelectedLaporan } from '../../redux/slices/computerSlice';
+import { Link } from 'react-router-dom';
 
 const FormPenyelesaianMasalah = () => {
     const dispatch = useDispatch();
@@ -179,10 +180,12 @@ const FormPenyelesaianMasalah = () => {
                             <div className="row">
                                 <div className="col-3">
                                     <div className="d-grid">
-                                        <Button 
-                                            text={`Ai Helper`}
-                                            customClassName={`btnWarning`}
-                                        />
+                                        <Link to={`/manage/${ruanganData.id}/${data.kodeInventaris}/aichat`}>
+                                            <Button 
+                                                text={`Ai Helper`}
+                                                customClassName={`btnWarning`}
+                                            />
+                                        </Link>
                                     </div>
                                 </div>
                                 <div className="col-4 p-0">
