@@ -6,8 +6,8 @@ const ruanganSlice = createSlice({
   name: 'ruangan',
   initialState: {
     ruanganData: [],
-    laporanData :[],
-    selectedRuangan: JSON.parse(localStorage.getItem('selectedRuangan')) || '',
+    laporanData:[],
+    selectedRuangan: JSON.parse(localStorage.getItem('selectedRuangan')) || null,
     loading: false,
     error: null,
   },

@@ -3,6 +3,7 @@ import Alert from '../Alert/Alert';
 import { containerNotifikasi, judulContainerNotifikasi } from './ListNotifikasi.module.css';
 import { useEffect } from 'react';
 import { fetchAllLaporanData } from '../../redux/thunks/ruanganAPI';
+import { resetLaporanData } from '../../redux/slices/ruanganSlice';
 
 const ListNotifikasi = () => {
     const dispatch = useDispatch();
@@ -29,33 +30,38 @@ const ListNotifikasi = () => {
     useEffect(() => {
         if(selectedRuangan){
             dispatch(fetchAllLaporanData(selectedRuangan.id));
+        } else {
+            dispatch(resetLaporanData());
         }
     }, [selectedRuangan]);
 
     return (
         <>
-            <div className={`${containerNotifikasi}`}>
-                <p className={`${judulContainerNotifikasi}`}>
-                    {
-                        selectedRuangan?.namaRuangan &&
-                        `Informasi terakhir di ${selectedRuangan.namaRuangan}`
-                    }
-                </p>
-                {
-                    laporanData && laporanData.length > 0 ?
-                        laporanData
-                            .slice(0, 5) // Display only the first 5 items
-                            .map((item, index) => (
-                                <Alert
-                                    key={index}
-                                    className={getAlertClassName(item.data.status)}
-                                    message={getAlertText(item)}
-                                />
-                            ))
-                        :
-                        ''
-                }
-            </div>
+            {
+                selectedRuangan &&
+                    <div className={`${containerNotifikasi}`}>
+                        <p className={`${judulContainerNotifikasi}`}>
+                            {
+                                selectedRuangan?.namaRuangan &&
+                                `Informasi terakhir di ${selectedRuangan.namaRuangan}`
+                            }
+                        </p>
+                        {
+                            laporanData && laporanData.length > 0 ?
+                                laporanData
+                                    .slice(0, 5)
+                                    .map((item, index) => (
+                                        <Alert
+                                            key={index}
+                                            className={getAlertClassName(item.data.status)}
+                                            message={getAlertText(item)}
+                                        />
+                                    ))
+                                :
+                                <h5 className='text-white text-center'>No Data</h5>
+                        }
+                    </div>
+            }
         </>
     );
 }

@@ -18,8 +18,7 @@ const LandingPage = () => {
     //     dispatch(resetSelectedLaporan());
         dispatch(resetSelectedRuangan());
         dispatch(resetLaporanData());
-        dispatch(resetRuanganData());
-
+        // dispatch(resetRuanganData());
     //     return () => {
     //         dispatch(resetSelectedRuangan());
     //         dispatch(resetSelectedRuangan());
