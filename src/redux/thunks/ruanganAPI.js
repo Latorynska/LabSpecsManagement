@@ -119,3 +119,55 @@ export const deleteRuanganData = createAsyncThunk(
     }
   }
 );
+
+export const fetchAllLaporanData = createAsyncThunk(
+  "ruangan/fetchAllLaporanData",
+  async (idRuangan, { rejectWithValue }) => {
+    try {
+      const laporanData = [];
+      const ruanganRef = doc(db, "ruangan", idRuangan);
+      const layoutQuery = collection(ruanganRef, "layout");
+
+      const layoutSnapshot = await getDocs(layoutQuery);
+
+      for (const layoutDoc of layoutSnapshot.docs) {
+        const kodeInventaris = layoutDoc.data().kodeInventaris;
+        const nomor = layoutDoc.data().nomor;
+        const layoutRef = doc(db, "ruangan", idRuangan, "layout", kodeInventaris);
+
+        const laporanQuery = collection(layoutRef, "laporan");
+        const laporanSnapshot = await getDocs(laporanQuery);
+
+        for (const laporanDoc of laporanSnapshot.docs) {
+          const laporanDataItem = laporanDoc.data();
+
+          laporanData.push({
+            kodeInventaris: kodeInventaris,
+            nomor: nomor,
+            data: laporanDataItem,
+          });
+        }
+      }
+
+      laporanData.sort((a, b) => {
+        const dateA = new Date(
+          parseInt(a.data.tanggal.split('/')[2]),
+          parseInt(a.data.tanggal.split('/')[1]) - 1,  
+          parseInt(a.data.tanggal.split('/')[0]) 
+        );
+        const dateB = new Date(
+          parseInt(b.data.tanggal.split('/')[2]),
+          parseInt(b.data.tanggal.split('/')[1]) - 1,
+          parseInt(b.data.tanggal.split('/')[0]) 
+        );
+
+        return dateB - dateA;
+      });
+      // console.log(laporanData);
+      return laporanData;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error.message);
+    }
+  }
+);

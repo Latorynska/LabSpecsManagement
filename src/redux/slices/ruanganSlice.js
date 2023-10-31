@@ -1,11 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { addRuanganData, fetchRuanganData, updateRuanganData, deleteRuanganData } from '../thunks/ruanganAPI';
+import { addRuanganData, fetchRuanganData, updateRuanganData, deleteRuanganData, fetchAllLaporanData } from '../thunks/ruanganAPI';
 
 
 const ruanganSlice = createSlice({
   name: 'ruangan',
   initialState: {
     ruanganData: [],
+    laporanData :[],
     selectedRuangan: JSON.parse(localStorage.getItem('selectedRuangan')) || '',
     loading: false,
     error: null,
@@ -21,6 +22,9 @@ const ruanganSlice = createSlice({
     },
     resetRuanganData : (state) => {
       state.ruanganData = [];
+    },
+    resetLaporanData : (state) => {
+      state.laporanData = [];
     }
   },
   extraReducers: (builder) => {
@@ -78,10 +82,22 @@ const ruanganSlice = createSlice({
       .addCase(deleteRuanganData.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(fetchAllLaporanData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllLaporanData.fulfilled, (state, action) => {
+        state.loading = false;
+        state.laporanData = action.payload;
+      })
+      .addCase(fetchAllLaporanData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
 
-export const { setSelectedRuangan, resetSelectedRuangan, resetRuanganData } = ruanganSlice.actions;
+export const { setSelectedRuangan, resetSelectedRuangan, resetRuanganData, resetLaporanData } = ruanganSlice.actions;
 
 export default ruanganSlice.reducer;
