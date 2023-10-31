@@ -4,9 +4,9 @@ import Input from "../Input/Input";
 import Select from "../Select/Select";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addComp, deleteComp, fetchLayout, fetchServerData, switchPosition, updateComp } from "../../redux/thunks/LabLayoutAPI";
+import { addComp, deleteComp, fetchLayout, fetchServerData, switchPosition, updateComp } from "../../redux/thunks/lablayoutAPI";
 import Swal from 'sweetalert2';
-import { resetSelectedComp } from "../../redux/slices/LabLayoutSlice";
+import { resetSelectedComp } from "../../redux/slices/lablayoutSlice";
 import { fetchRuanganData } from "../../redux/thunks/ruanganAPI";
 import { setSelectedRuangan } from "../../redux/slices/ruanganSlice";
 

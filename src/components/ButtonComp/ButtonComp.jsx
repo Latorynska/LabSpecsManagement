@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import styles from './ButtonComp.module.css';
 import { useDispatch } from 'react-redux';
-import { setSelectedComp } from '../../redux/slices/LabLayoutSlice';
+import { setSelectedComp } from '../../redux/slices/lablayoutSlice';
 
 const ButtonComp = ({ name, id, text, computerStatus, onClick, disabled, to, comp }) => {
     let customClass;

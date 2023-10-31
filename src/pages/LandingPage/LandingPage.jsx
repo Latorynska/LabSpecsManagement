@@ -5,7 +5,7 @@ import LabLayout from "../../components/LabLayout/LabLayout";
 import ListNotifikasi from "../../components/ListNotifikasi/ListNotifikasi";
 import RuanganButtonList from "../../components/RuanganButtonList/RuanganButtonList";
 import { useDispatch } from "react-redux";
-import { resetLaporanData, resetSelectedRuangan } from "../../redux/slices/ruanganSlice";
+import { resetLaporanData, resetRuanganData, resetSelectedRuangan } from "../../redux/slices/ruanganSlice";
 import { fetchRuanganData } from "../../redux/thunks/ruanganAPI";
 
 const LandingPage = () => {
@@ -18,7 +18,7 @@ const LandingPage = () => {
     //     dispatch(resetSelectedLaporan());
         dispatch(resetSelectedRuangan());
         dispatch(resetLaporanData());
-        // dispatch(resetRuanganData());
+        dispatch(resetRuanganData());
 
     //     return () => {
     //         dispatch(resetSelectedRuangan());

@@ -4,8 +4,8 @@ import { containerBox, rowComp } from './LabLayout.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSquarePlus } from '@fortawesome/free-regular-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchLayout, fetchServerData } from '../../redux/thunks/LabLayoutAPI';
-import { resetCompsAndServer, resetSelectedComp, setSelectedComp } from '../../redux/slices/LabLayoutSlice';
+import { fetchLayout, fetchServerData } from '../../redux/thunks/lablayoutAPI';
+import { resetCompsAndServer, resetSelectedComp, setSelectedComp } from '../../redux/slices/lablayoutSlice';
 import Swal from 'sweetalert2';
 
 const LabLayout = ({ access }) => {
