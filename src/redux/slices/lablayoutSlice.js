@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchLayout, addComp, updateComp, deleteComp, fetchServerData, switchPosition } from '../thunks/LabLayoutAPI';
+import { fetchLayout, addComp, updateComp, deleteComp, fetchServerData, switchPosition } from '../thunks/lablayoutAPI';
 
 const lablayoutSlice = createSlice({
   name: 'lablayout',
