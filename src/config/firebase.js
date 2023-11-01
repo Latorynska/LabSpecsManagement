@@ -11,13 +11,6 @@ const firebaseConfig = {
   messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.FIREBASE_APP_ID,
   measurementId: process.env.FIREBASE_MEASUREMENT_ID
-  // apiKey: "AIzaSyAfcRTTv9G5WQ9yckhNPEJZd7H8yUVs8hc",
-  // authDomain: "labspecsmanagement.firebaseapp.com",
-  // projectId: "labspecsmanagement",
-  // storageBucket: "labspecsmanagement.appspot.com",
-  // messagingSenderId: "1014616473231",
-  // appId: "1:1014616473231:web:3a395218edc4a898e8bafa",
-  // measurementId: "G-JVMS0HWQ36"
 };
 
 

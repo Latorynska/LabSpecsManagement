@@ -87,7 +87,7 @@ const AiChat = () => {
 
     useEffect(() => {
         const messageLines = inputMessage.split('\n').length;
-        setTextAreaRows(Math.min(14, messageLines)); // Set the maximum number of rows to 14
+        setTextAreaRows(Math.min(14, messageLines));
     }, [inputMessage]);
     return (
         <div className="container mt-5">
