@@ -1,7 +1,7 @@
 import { getAuth } from "firebase/auth";
 import Footer from "../components/Footer/Footer";
 import Header from "../components/Header/Header";
-import styles from "../styles/global.module.css";
+import "../styles/global.module.css";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 
