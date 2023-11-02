@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { containerRuangan, titleManageKomputer, accessingTitle } from './ManageKomputer.module.css';
 import LabLayout from '../../components/LabLayout/LabLayout';
 import Button from '../../components/Button/Button';
@@ -9,21 +9,24 @@ import Input from '../../components/Input/Input';
 import Switch from '../../components/Switch/Switch';
 import ButtonComp from '../../components/ButtonComp/ButtonComp';
 import FormDataKomputer from '../../components/FormDataKomputer/FormDataKomputer';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PasswordRuangan from '../../components/PasswordRuangan/PasswordRuangan';
+import { fetchRuanganData } from '../../redux/thunks/ruanganAPI';
 
 const ManageKomputer = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { labId } = useParams();
     const selectedComp = useSelector(state => state.lablayout.selectedComp);
     const { selectedRuangan } = useSelector(state => state.ruangan)
     useEffect(() => {
-        console.log('euy');
+        dispatch(fetchRuanganData(labId));
     }, []);
 
     return (
         <>
             <div className={`text-center ${titleManageKomputer} pt-5`}>
-                Anda sedang mengelola : {selectedRuangan.namaRuangan}
+                Anda sedang mengelola : {selectedRuangan?.namaRuangan}
             </div>
             <div className="row m-0 p-0">
                 <div className="col-5 ps-5 pt-5">
@@ -57,8 +60,8 @@ const ManageKomputer = () => {
                             {
                                 selectedComp ? 
                                 <ButtonComp 
-                                    text={selectedComp.status == 'empty' ? '-' : selectedComp.nomor}
-                                    computerStatus={selectedComp.status}
+                                    text={selectedComp?.status == 'empty' ? '-' : selectedComp?.nomor}
+                                    computerStatus={selectedComp?.status}
                                 />
                                 :
                                 <ButtonComp

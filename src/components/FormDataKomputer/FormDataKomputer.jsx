@@ -805,7 +805,7 @@ const FormDataKomputer = () => {
                         <div className="col-8"></div>
                         <div className="col-4">
                             {
-                                !selectedComp &&
+                                (!selectedComp && selectedRuangan) &&
                                     <Button 
                                         text={`Save as New`}
                                         customClassName={`btnPrimary`}
